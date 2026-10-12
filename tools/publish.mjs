@@ -376,7 +376,11 @@ const gammelSti = join(ROD, ind.delt);
 let pakke, nye, nySteder, gamleSteder, billeder;
 try {
   pakke = hentIndhold();
-  console.log(`Pakke: ${fed(pakke.kilde)}  ${dæmpet(`${bytes(statSync(pakke.sti).size)} — ${pakke.sti}`)}\n`);
+  const erMappe = statSync(pakke.sti).isDirectory();
+  const størrelse = erMappe
+    ? readdirSync(pakke.sti).reduce((s, n) => s + statSync(join(pakke.sti, n)).size, 0)
+    : statSync(pakke.sti).size;
+  console.log(`Pakke: ${fed(pakke.kilde)}  ${dæmpet(`${bytes(størrelse)} — ${pakke.sti}${erMappe ? ' (mappe)' : ''}`)}\n`);
 
   nye = new Map();
   const skrald = [];
