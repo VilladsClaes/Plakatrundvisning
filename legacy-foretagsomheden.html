@@ -1,0 +1,329 @@
+﻿<!DOCTYPE html>
+<html lang="da">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Foretagsomheden</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+    }
+
+    #plakat {
+      position: fixed;
+      left: -9541px;
+      top: -5408px;
+      /* min-width: 100%;
+      min-height: 100%; */
+      width: auto;
+      height: auto;
+      z-index: -100;
+      /* transform: translateX(-10%) translateY(0%); */
+      /* background-size: cover; */
+      /* transition: 1s opacity; */
+      
+    }
+
+    
+
+   
+
+    .stopfade {
+      opacity: .5;
+    }
+
+    #tekst {
+      font-family: Agenda-Light, Agenda Light, Agenda, Arial Narrow, sans-serif;
+      font-weight: 100;
+      background: rgba(39, 31, 31, 0.8);
+      color: white;
+      padding: 2rem;
+      width: 33%;
+      margin: 2rem;
+      float: right;
+      font-size: 1.2rem;
+      transition: 1s;
+    }
+
+
+
+    h1 {
+      font-size: 3rem;
+      text-transform: uppercase;
+      margin-top: 0;
+      letter-spacing: .3rem;
+    }
+
+    #tekst button {
+      display: block;
+      width: 80%;
+      padding: .4rem;
+      border: none;
+      margin: 1rem auto;
+      font-size: 1.3rem;
+      background: rgba(255, 255, 255, 0.23);
+      color: #fff;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: .3s background;
+    }
+
+    #tekst button:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    a {
+      display: inline-block;
+      color: #fff;
+      text-decoration: none;
+      background: rgba(0, 0, 0, 0.5);
+      padding: .5rem;
+      transition: .6s background;
+    }
+
+    a:hover {
+      background: rgba(0, 0, 0, 0.9);
+    }
+
+    @media screen and (max-width: 500px) {
+      div {
+        width: 70%;
+      }
+    }
+
+    @media screen and (max-device-width: 800px) {
+      html {
+        background-color: rgba(54, 54, 54, 0.9);
+      }     
+      
+    }
+  </style>
+  <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+  
+    <!-- Plakaten i baggrunden -->
+    <img id="plakat" src="plakat.jpg" alt="Tegning med alt det man kan i Skarresø">
+  
+ <!-- Tekst og menu -->
+  <div id="tekst">
+    <h1 id="overskrift">Skarresø</h1>
+    <p id="beskrivelse">Se hvad du kan i Skarresø</p>
+    <ul>
+
+      <!-- Steder -->
+      <li onclick="skiftSted(0)" >Kom nemt til Skarresø</li>
+      <li onclick="skiftSted(1)" >Spis ved et 70 meter langt fællesbord</li>
+      <li onclick="skiftSted(2)" >Svømmepøl</li>
+      <li onclick="skiftSted(3)" >Drivhuse</li>
+      <li onclick="skiftSted(4)" >Vinbar</li>
+      <li onclick="skiftSted(5)" >Scene</li>
+      <li onclick="skiftSted(6)" >Slap af</li>
+      <li onclick="skiftSted(7)" >opvaks</li>
+      <li onclick="skiftSted(8)" >tøjvask</li>
+      <li onclick="skiftSted(9)" >Drinksbar</li>
+      <li onclick="skiftSted(10)" >Børneområde</li>
+      <li onclick="skiftSted(11)" >Høns</li>
+      <li onclick="skiftSted(12)" >Sneglebingo</li>
+      <li onclick="skiftSted(13)" >Sansehaven</li>
+      <li onclick="skiftSted(14)" >Skarresø sø</li>
+      <li onclick="skiftSted(15)" >Hulebyg</li>
+      <li onclick="skiftSted(16)" >Telthængekøjer</li>
+      <li onclick="skiftSted(17)" >Legeplads</li>
+      <li onclick="skiftSted(18)" >Genbrug</li>
+      <li onclick="skiftSted(19)" >Tøjskab</li>
+
+      
+    </ul>
+
+    <a href="http://www.foretagsomheden.dk">Besøg</a>
+  </div>
+
+  <script type="text/javascript">
+  
+   //Plakaten gemmes i en variabel      
+   var plakat = $("#plakat");
+   console.log(plakat)
+
+   
+
+
+   //hvad hedder 
+
+   //de steder vi vil hen gemmes i en liste af objekter
+   
+   var stedliste = [{
+        left: "-6200",
+        top: "-290",
+        stednavn: "Busstoppet",
+        beskrivelse: "Du kan tage bus 120 direkte"
+      },
+      {
+        left: "-3300",
+        top: "-1900",        
+        stednavn: "Spisebordet",
+        beskrivelse: "Morgen, Middag og Aftensmad serveres ved langbord"
+      },
+      {
+        left: "-3400",
+        top: "-1040",
+        stednavn: "Svømmepøl",
+        beskrivelse: "Solvarmet fællesbad"
+      },
+      {
+        left: "-1980",
+        top: "-1387",
+        stednavn: "Hyggelige drivhuse",
+        beskrivelse: "Natten lang er der dybe samtaler i drivhusene"
+      }
+      
+      ,
+      {
+        left: "-1805",
+        top: "-2141",
+        stednavn: "Vinbar",
+        beskrivelse: "Natten lang er der dybe samtaler i drivhusene"
+      }
+      ,
+      {
+        left: "-1556",
+        top: "-3170",
+        stednavn: "Scene",
+        beskrivelse: "Natten lang er der dybe samtaler i drivhusene"
+      }
+      ,
+      {
+        left: "-2110",
+        top: "-3796",
+        stednavn: "Slap af",
+        beskrivelse: "Natten lang er der dybe samtaler i drivhusene"
+      }
+      ,
+      {
+        left: "-3288",
+        top: "-4829",
+        stednavn: "Fælles opvask",
+        beskrivelse: "Natten lang er der dybe samtaler i drivhusene"
+      }
+      ,
+      {
+        left: "-1605",
+        top: "-5072",
+        stednavn: "Opfindsomhed",
+        beskrivelse: "Byg maskiner og leg med opfindsomme eksperimenter"
+      } ,
+      {
+        left: "-2384",
+        top: "-5042",
+        stednavn: "Sjusser og drinks",
+        beskrivelse: "Lækre drinks bygget af verdens største udvalg af ingredienser"
+      } ,
+      {
+        left: "-3417",
+        top: "-6170",
+        stednavn: "Børneområde",
+        beskrivelse: "Natten lang er der dybe samtaler i drivhusene"
+      } ,
+      {
+        left: "-2809",
+        top: "-6773",
+        stednavn: "Høns",
+        beskrivelse: "Natten lang er der dybe samtaler i drivhusene"
+      } ,
+      {
+        left: "-600",
+        top: "-6200",
+        stednavn: "Sneglebingo",
+        beskrivelse: "Find en vinbjergsnegl med et nummer på og du har vundet!"
+      } ,
+      {
+        left: "-4070",
+        top: "-6530",
+        stednavn: "Sansehave",
+        beskrivelse: "spis dit ukrudt og lær om lægeplanter og historierne bag"
+      } ,
+      {
+        left: "-7687",
+        top: "-6690",
+        stednavn: "Søen",
+        beskrivelse: "Natten lang er der dybe samtaler i drivhusene"
+      } ,
+      {
+        left: "-6480",
+        top: "-5800",
+        stednavn: "Huler i træerne",
+        beskrivelse: "Natten lang er der dybe samtaler i drivhusene"
+      } ,
+      {
+        left: "-8178",
+        top: "-5290",
+        stednavn: "Hængekøjer at sove i",
+        beskrivelse: "Natten lang er der dybe samtaler i drivhusene"
+      } ,
+      {
+        left: "-6280",
+        top: "-3600",
+        stednavn: "Legeplads",
+        beskrivelse: "Natten lang er der dybe samtaler i drivhusene"
+      } ,
+      {
+        left: "-6534",
+        top: "-2646",
+        stednavn: "Genbrug",
+        beskrivelse: "Natten lang er der dybe samtaler i drivhusene"
+      } ,
+      {
+        left: "-6564",
+        top: "-1119",
+        stednavn: "Tøjskab",
+        beskrivelse: "Natten lang er der dybe samtaler i drivhusene"
+      }
+    ];
+    
+
+   function skiftSted(stedlisteItem){
+     
+      //Hvilket menupunkt har vi klikket på?
+      console.log(stedliste[stedlisteItem])
+
+      //udskift transform-værdierne 
+      console.log()
+      var top = stedliste[stedlisteItem].top;
+      var left = stedliste[stedlisteItem].left;
+     
+      
+      plakat.animate({
+        left: left+"px",
+        top: top+"px", 
+        })
+      
+      skiftTekst(stedlisteItem)
+     
+
+      
+   }
+
+   function skiftTekst (stedlisteItem) {
+
+    var stednavn = stedliste[stedlisteItem].stednavn;
+    var beskrivelse = stedliste[stedlisteItem].beskrivelse;
+    
+
+    $("#overskrift").text(stednavn)
+    $("#beskrivelse").text(beskrivelse)
+    
+
+     }
+
+    
+  
+  </script>
+</body>
+
+</html>

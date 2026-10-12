@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Skarresø — interaktivt kort</title>
+<meta name="description" content="Udforsk illustrationen: klik på et sted i menuen, og se hvor det ligger. Upload din egen illustration og sæt dine egne steder.">
+<meta name="theme-color" content="#0b0a09">
+<link rel="stylesheet" href="assets/app.css">
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- Illustrationen -->
+  <div class="scene" id="scene">
+    <div class="world" id="world">
+      <img class="poster" id="poster" alt="Illustration af Skarresø" draggable="false">
+    </div>
+  </div>
+
+  <div class="veil" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- Tråd fra menu til sted -->
+  <svg class="threads" id="threads" aria-hidden="true">
+    <defs>
+      <linearGradient id="threadGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#ffb703" stop-opacity="0"/>
+        <stop offset="20%" stop-color="#ffb703" stop-opacity=".95"/>
+        <stop offset="100%" stop-color="#ffb703" stop-opacity=".6"/>
+      </linearGradient>
+    </defs>
+    <path id="thread" class="thread" d=""></path>
+  </svg>
+
+  <!-- Prikker på illustrationen -->
+  <div class="markers" id="markers"></div>
+
+  <!-- Fortællingen under rundturen -->
+  <div class="caption" id="caption" role="status" aria-live="polite">
+    <p class="caption__count" id="captionCount"></p>
+    <h2 class="caption__name" id="captionName"></h2>
+    <p class="caption__text" id="captionText"></p>
+  </div>
+
+  <!-- Menupanelet -->
+  <aside class="panel" id="panel" aria-label="Steder">
+    <header class="panel__head">
+      <p class="kicker" id="kicker">Interaktivt kort</p>
+      <h1 class="title" id="title">Skarresø</h1>
+      <p class="lede" id="lede">Vælg et sted — så glider blikket derhen.</p>
+    </header>
+
+    <div class="panel__scroll" id="scroll">
+      <ol class="menu" id="menu"></ol>
+    </div>
+
+    <footer class="detail" id="detail">
+      <div class="detail__empty" id="detailEmpty">
+        <button class="tour-start" id="tourStart" type="button">
+          <span class="tour-start__play" aria-hidden="true"></span>
+          <span class="tour-start__label">Se rundturen</span>
+          <span class="tour-start__meta" id="tourMeta"></span>
+        </button>
+      </div>
+
+      <div class="tour" id="tourBar" hidden>
+        <p class="tour__count" id="tourCount"></p>
+        <div class="tour__track"><span class="tour__fill" id="tourFill"></span></div>
+        <div class="tour__row">
+          <button class="ghost" id="tourPause" type="button">⏸ Pause</button>
+          <button class="ghost" id="tourStop" type="button">Stop</button>
+        </div>
+      </div>
+      <div class="detail__body" id="detailBody" hidden>
+        <p class="detail__count" id="detailCount"></p>
+        <h2 class="detail__name" id="detailName"></h2>
+        <p class="detail__text" id="detailText"></p>
+        <div class="detail__nav">
+          <button class="ghost" id="prevBtn" type="button">↑ Forrige</button>
+          <button class="ghost" id="nextBtn" type="button">Næste ↓</button>
+        </div>
+      </div>
+    </footer>
+  </aside>
+
+  <!-- Zoom + minikort -->
+  <div class="hud hud--zoom">
+    <button class="icon" id="zoomIn" type="button" title="Zoom ind" aria-label="Zoom ind">+</button>
+    <button class="icon" id="zoomOut" type="button" title="Zoom ud" aria-label="Zoom ud">−</button>
+    <button class="icon" id="zoomFit" type="button" title="Vis hele illustrationen" aria-label="Vis hele illustrationen">⤢</button>
+  </div>
+
+  <div class="hud hud--mini" id="miniWrap">
+    <canvas id="mini" width="196" height="140"></canvas>
+    <div class="mini__box" id="miniBox"></div>
+  </div>
+
+  <!-- Redigering -->
+  <button class="edit-toggle" id="editToggle" type="button">
+    <span class="edit-toggle__dot"></span>
+    <span id="editToggleText">Redigér steder</span>
+  </button>
+
+  <div class="editbar" id="editbar" hidden>
+    <span class="badge" id="badge"></span>
+    <button class="pill pill--accent" id="addPlace" type="button">＋ Nyt sted</button>
+    <button class="pill" id="uploadImage" type="button">Nyt billede</button>
+    <span class="editbar__sep"></span>
+    <button class="pill pill--accent" id="exportBtn" type="button">Hent kortet</button>
+    <button class="pill" id="importBtn" type="button">Læs ind</button>
+    <button class="pill" id="discardBtn" type="button">Kassér</button>
+    <button class="pill pill--danger" id="lockBtn" type="button">Lås</button>
+  </div>
+
+  <!-- Nøgle til redigeringstilstanden -->
+  <div class="gate" id="gate" hidden>
+    <form class="gate__box" id="gateForm">
+      <p class="gate__kicker">Redigering</p>
+      <h2 class="gate__title">Skriv nøglen</h2>
+      <p class="gate__text">Stederne er fælles for alle besøgende. Nøglen låser redigeringen op i denne browser, og ændringer samles i en kladde, til du henter kortet ud.</p>
+      <input class="gate__input" id="gateInput" type="password" autocomplete="off" spellcheck="false" placeholder="Nøgle" aria-label="Redigeringsnøgle">
+      <p class="gate__msg" id="gateMsg" role="alert"></p>
+      <div class="gate__row">
+        <button class="ghost" id="gateClose" type="button">Luk</button>
+        <button class="pill pill--accent" type="submit">Lås op</button>
+      </div>
+    </form>
+  </div>
+
+  <p class="hint" id="hint">Træk for at panorere · rul for at zoome</p>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <input type="file" id="imageInput" accept="image/*" hidden>
+  <input type="file" id="jsonInput" accept="application/json,.json" hidden>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
