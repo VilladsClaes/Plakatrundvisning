@@ -11,6 +11,7 @@
  *   node tools/publish.mjs --tør              vis hvad der ville ske, skriv intet
  *   node tools/publish.mjs --uden-push        læg filerne på plads, udgiv ikke
  *   node tools/publish.mjs --tilbage          rul det forrige sæt tilbage og udgiv
+ *   node tools/publish.mjs --tvang            udgiv selvom indholdet er det samme
  *   node tools/publish.mjs --gren andet        udgiv til en anden gren
  *
  * Alt andet end pakken bestemmes ud fra projektet selv: hvilke filnavne der
@@ -22,7 +23,7 @@ import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import {
   copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync,
-  rmSync, statSync, writeFileSync,
+  statSync, writeFileSync,
 } from 'node:fs';
 import { homedir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
@@ -275,6 +276,7 @@ function hjælp() {
     node tools/publish.mjs --gren andet      udgiv til en anden gren
 
     --rod <mappe>     et andet projekt end dette (til prøvekørsler)
+    --besked "…"     din egen commit-besked
     -h, --hjælp       denne tekst`);
 }
 
@@ -508,7 +510,7 @@ if (!ændredeFiler.length) {
   process.exit(0);
 }
 
-const linjer = `${nySteder.places.length} steder`;
+const antalSteder = `${nySteder.places.length} steder`;
 const krop = [
   '',
   ...(tilføjet.length ? [`Tilføjet: ${tilføjet.join(', ')}`] : []),
@@ -516,7 +518,7 @@ const krop = [
   ...(rettet.length ? [`Rettet: ${rettet.join(', ')}`] : []),
   ...(billeder.some((b) => b.gammel !== b.ny) ? ['Nyt billede'] : []),
 ];
-const besked = valg.besked || `Udgiv: ${linjer} — ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`;
+const besked = valg.besked || `Udgiv: ${antalSteder} — ${new Date().toISOString().slice(0, 16).replace('T', ' ')}`;
 // Stinavnene til sidst: så ryger kun kortets egne filer med, uanset hvad der
 // ellers måtte være lagt klar i mellemlageret.
 const commit = git(ROD, ['commit', '-m', besked, ...(krop.length > 1 ? ['-m', krop.join('\n')] : []), '--', ...ændredeFiler]);
