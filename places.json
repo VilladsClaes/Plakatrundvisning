@@ -1,112 +1,112 @@
 {
   "navn": "Skarresø",
   "udgave": 1,
-  "opdateret": "2026-10-12T20:27:42Z",
+  "opdateret": "2026-10-12T21:25:49Z",
   "places": [
     {
       "navn": "Bussen",
+      "tekst": "Bussen standser lige uden for porten — den nemmeste vej hertil.",
       "x": 0.594,
       "y": 0.082,
-      "zoom": 3.4,
-      "tekst": "Bussen standser lige uden for porten — den nemmeste vej hertil."
+      "zoom": 3.4
     },
     {
       "navn": "Den store bue",
+      "tekst": "Buen med lyskæder byder velkommen ind til pladsen.",
       "x": 0.626,
       "y": 0.19,
-      "zoom": 3.2,
-      "tekst": "Buen med lyskæder byder velkommen ind til pladsen."
+      "zoom": 3.2
     },
     {
       "navn": "Det lange fællesbord",
+      "tekst": "70 meter bord. Maden stilles på midten, og alle kan være med.",
       "x": 0.4,
       "y": 0.29,
-      "zoom": 2.9,
-      "tekst": "70 meter bord. Maden stilles på midten, og alle kan være med."
+      "zoom": 2.9
     },
     {
       "navn": "Hønsegården",
+      "tekst": "Hønsene går frit mellem bordene og finder selv deres frokost.",
       "x": 0.64,
       "y": 0.282,
-      "zoom": 3.6,
-      "tekst": "Hønsene går frit mellem bordene og finder selv deres frokost."
+      "zoom": 3.6
     },
     {
       "navn": "Drivhusene",
+      "tekst": "Glasshusene, hvor der dyrkes tomater og krydderurter hele året.",
       "x": 0.235,
       "y": 0.222,
-      "zoom": 3.2,
-      "tekst": "Glasshusene, hvor der dyrkes tomater og krydderurter hele året."
+      "zoom": 3.2
     },
     {
       "navn": "Vinbaren",
+      "tekst": "Skiltet siger vinbar. Her hældes der op til de lange samtaler.",
       "x": 0.21,
       "y": 0.31,
-      "zoom": 3.4,
-      "tekst": "Skiltet siger vinbar. Her hældes der op til de lange samtaler."
+      "zoom": 3.4
     },
     {
       "navn": "Det store hus",
+      "tekst": "Huset med det skællede tegltag — samlingsstedet midt i landsbyen.",
       "x": 0.362,
       "y": 0.545,
-      "zoom": 3,
-      "tekst": "Huset med det skællede tegltag — samlingsstedet midt i landsbyen."
+      "zoom": 3
     },
     {
       "navn": "Klatretårnet",
+      "tekst": "Trætårn i flere etager. Der er unger i alle retninger.",
       "x": 0.56,
       "y": 0.62,
-      "zoom": 3.2,
-      "tekst": "Trætårn i flere etager. Der er unger i alle retninger."
+      "zoom": 3.2
     },
     {
       "navn": "Træplatformen",
+      "tekst": "Oppe i det store træ: en platform, et lille bord og flagguirlander.",
       "x": 0.63,
       "y": 0.735,
-      "zoom": 3,
-      "tekst": "Oppe i det store træ: en platform, et lille bord og flagguirlander."
+      "zoom": 3
     },
     {
       "navn": "Telthængekøjerne",
+      "tekst": "Læn dig tilbage under teltene og lad dagen gå.",
       "x": 0.752,
       "y": 0.684,
-      "zoom": 3.2,
-      "tekst": "Læn dig tilbage under teltene og lad dagen gå."
+      "zoom": 3.2
     },
     {
       "navn": "Det store æg",
+      "tekst": "Det mærkelige, store æg midt i haven. Kig forbi og se selv.",
       "x": 0.852,
       "y": 0.24,
-      "zoom": 3.6,
-      "tekst": "Det mærkelige, store æg midt i haven. Kig forbi og se selv."
+      "zoom": 3.6
     },
     {
       "navn": "Markedsboderne",
+      "tekst": "Boder med stribede markiser — planter, kager og ting man ikke vidste man manglede.",
       "x": 0.41,
       "y": 0.8,
-      "zoom": 3.4,
-      "tekst": "Boder med stribede markiser — planter, kager og ting man ikke vidste man manglede."
+      "zoom": 3.4
     },
     {
       "navn": "Vaskeriet",
+      "tekst": "Vask, opvask og tørring. Cyklen kører vasketøjet frem og tilbage.",
       "x": 0.19,
       "y": 0.69,
-      "zoom": 3.4,
-      "tekst": "Vask, opvask og tørring. Cyklen kører vasketøjet frem og tilbage."
+      "zoom": 3.4
     },
     {
       "navn": "Sneglebingo",
+      "tekst": "Find vinbjergsneglen med nummer på ryggen — så har du vundet.",
       "x": 0.12,
       "y": 0.87,
-      "zoom": 3.6,
-      "tekst": "Find vinbjergsneglen med nummer på ryggen — så har du vundet."
+      "zoom": 3.6
     },
     {
       "navn": "Skarresø",
+      "tekst": "Søen med åkander og en robåd, der altid er lige ved at lette.",
       "x": 0.77,
       "y": 0.855,
-      "zoom": 3.4,
-      "tekst": "Søen med åkander og en robåd, der altid er lige ved at lette."
+      "zoom": 3.4
     }
   ]
 }
