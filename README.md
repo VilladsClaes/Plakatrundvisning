@@ -28,6 +28,7 @@ Pages, en mappe på et webhotel …). Der er ingen build og ingen afhængigheder
 | Handling | Sådan |
 | --- | --- |
 | **Guidet rundtur** | **Se rundturen** nederst i panelet, eller tryk `t` |
+| Din egen rundtur | Sæt hak i listen (eller `v`), tryk **▶ Se din rundtur** |
 | Pause undervejs | `mellemrum`, eller knappen **Pause** |
 | Se et sted | Klik på et menupunkt, på en prik eller tryk `1`–`9` |
 | Næste/forrige | `↑`/`↓` eller knapperne i detaljefeltet |
@@ -62,6 +63,25 @@ læne sig tilbage og følge med — eller tage over når som helst.
 
 Fortællingen ligger i et felt over illustrationen, så den også kan læses på en
 telefon, hvor panelet kun viser listen.
+
+## Din egen rundtur
+
+En besøgende kan sætte hak ved de steder, de gerne vil se, og få turen i præcis
+den rækkefølge de valgte dem:
+
+- **Sæt hak** med kassen til venstre i listen, eller med `v` mens man ser et sted.
+  Tallet i kassen viser pladsen i rækkefølgen — 1 er det første, der bliver vist.
+  Prikken ude på illustrationen får en ring, så man kan se sin rute på kortet.
+- **Linjen over detaljerne** viser hvor mange steder der er valgt og hvor lang tid
+  turen tager, med **▶ Se din rundtur**, **Alle** og **Ryd**.
+- **I sin egen rækkefølge:** turen følger den rækkefølge, der blev sat hak i —
+  ikke rækkefølgen i listen. Fjerner man et hak, rykker de andre op.
+- **Kun i din browser:** ruten huskes i `localStorage` og deles ikke med andre
+  besøgende. Den fælles fil er stadig kun stederne.
+
+Er der ingen hak, er knappen den samme som før: hele rundturen gennem alle steder.
+Sætter man hak undervejs i en tur, holder turen op som ved ethvert andet indgreb —
+og det nye valg gælder næste tur.
 
 ## Den fælles kilde
 
@@ -176,6 +196,7 @@ zoom samtidig.
 - `SHARED_FILE` — navnet på den fælles fil (`places.json`)
 - `POLL_MS` — hvor tit der lyttes efter ændringer (15 s)
 - `EDIT_KEY` — nøglen til redigeringstilstanden
+- `RUTE_LS` — nøglen hvor den besøgendes egen rute huskes i browseren
 - `DEFAULT_PLACES` — standardstederne, hvis filen mangler
 - `DEFAULT_IMAGE` / `LOW_IMAGE` — illustrationerne
 - `FULL_SIDE` / `LOW_SIDE` — bredden på de to udgivne billedfiler

@@ -56,6 +56,17 @@
       <ol class="menu" id="menu"></ol>
     </div>
 
+    <!-- Den personlige rute: vises kun når man har sat hak ved noget -->
+    <div class="rute" id="ruteBar" hidden>
+      <p class="rute__tekst" id="ruteTekst"></p>
+      <div class="rute__knapper">
+        <button class="pill pill--accent" id="ruteStart" type="button">▶ Se din rundtur</button>
+        <span class="rute__luft"></span>
+        <button class="pill" id="ruteAlle" type="button">Alle</button>
+        <button class="pill" id="ruteRyd" type="button">Ryd</button>
+      </div>
+    </div>
+
     <footer class="detail" id="detail">
       <div class="detail__empty" id="detailEmpty">
         <button class="tour-start" id="tourStart" type="button">

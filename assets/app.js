@@ -24,6 +24,7 @@
      slår igennem, når du lægger de hentede filer op. */
   const EDIT_KEY = 'drivhuset';
   const UNLOCK_LS = 'skarreso.noegle.v1';
+  const RUTE_LS = 'skarreso.rute.v1';        // den besøgendes egen rundtur
   const DRAFT_LS = 'skarreso.kladde.v1';
   const POLL_MS = 15000;                     // hvor tit der lyttes efter ændringer
 
@@ -92,6 +93,9 @@
   const tourFill = $('tourFill');
   const tourPauseBtn = $('tourPause');
   const tourMeta = $('tourMeta');
+  const tourLabel = document.querySelector('.tour-start__label');
+  const ruteBar = $('ruteBar');
+  const ruteTekst = $('ruteTekst');
 
   /* ---------- tilstand ---------- */
   const meta = { navn: DEFAULT_TITLE };
@@ -105,6 +109,7 @@
     objectUrl: null,
     unlocked: false,
     touring: false,    // kører den guidede rundtur?
+    rute: [],          // egen rundtur: stednavne i den rækkefølge de blev hakket af
     draft: false,      // er der en ikke-udgivet kladde i gang?
     draftText: '',
     imageDirty: false, // er der et nyt billede, der ikke er hentet ud?
@@ -112,7 +117,7 @@
     sharedText: '',
     pendingText: '',   // det vi sidst hentede ud, men endnu ikke har lagt op
   };
-  const tour = { on: false, paused: false, i: 0, timer: 0 };
+  const tour = { on: false, paused: false, i: 0, timer: 0, rute: [] };   // rute: navnene turen følger
   const img = { w: 1, h: 1, fit: 1 };
   const view = { tx: 0, ty: 0, zoom: 1 };
   const focus = { x: 0, y: 0 };       // hvor et sted skal lande på skærmen
@@ -323,7 +328,11 @@
   function applyPlaces() {
     const name = state.active >= 0 ? state.places[state.active]?.navn : null;
     state.active = name ? state.places.findIndex((p) => p.navn === name) : -1;
-    if (tour.on && tour.i >= state.places.length) tour.i = 0;
+    // Ruten følger filen: steder der er forsvundet, ryger ud af den.
+    const før = state.rute.length;
+    state.rute = state.rute.filter((n) => state.places.some((p) => p.navn === n));
+    if (state.rute.length !== før) gemRute();
+    if (tour.on && tour.i >= tour.rute.length) tour.i = 0;
     renderMenu();
     buildMarkers();
     state.dots.forEach((el) => el.classList.toggle('is-editing', state.editing));
@@ -521,6 +530,7 @@
       markersEl.appendChild(el);
       return el;
     });
+    renderRute();          // prikkerne skal have ring, hvis stedet er hakket af
   }
 
   function refreshMarkerLabels() {
@@ -620,6 +630,14 @@
         state.dots[i]?.classList.remove('is-hover');
       });
 
+      // Hakket: melder stedet med i den besøgendes egen rundtur. Det står ved
+      // siden af rækkeknappen, så et klik her ikke flytter kameraet.
+      const pick = document.createElement('button');
+      pick.type = 'button';
+      pick.className = 'row__pick';
+      pick.setAttribute('aria-pressed', 'false');
+      pick.addEventListener('click', () => skiftHak(p.navn));
+
       const edit = document.createElement('div');
       edit.className = 'row__edit';
       edit.innerHTML =
@@ -639,11 +657,19 @@
       const zoomInput = edit.querySelector('[data-f="zoom"]');
 
       const sync = () => {
+        const før = state.places[i].navn;
         state.places[i].navn = nameInput.value.trim() || 'Uden navn';
+        // Hakkene huskes på navn, så et nyt navn skal følge med ruten.
+        const iRuten = state.rute.indexOf(før);
+        if (iRuten >= 0 && før !== state.places[i].navn) {
+          state.rute[iRuten] = state.places[i].navn;
+          gemRute();
+        }
         state.places[i].tekst = textInput.value;
         btn.querySelector('.row__name').textContent = state.places[i].navn;
         const dot = state.dots[i];
         if (dot) dot.querySelector('.marker__label').textContent = state.places[i].navn;
+        renderRute();
         renderDetail();
         touch();
       };
@@ -659,13 +685,14 @@
       });
       edit.querySelector('[data-a="del"]').addEventListener('click', () => removePlace(i));
 
-      li.append(btn, edit);
+      li.append(pick, btn, edit);
       menuEl.appendChild(li);
       state.rows.push(li);
       li.__fields = { nameInput, textInput, zoomInput };
+      li.__pick = pick;
     });
     updateActiveRows();
-    if (tourMeta) tourMeta.textContent = tourSummary();
+    renderRute();
   }
 
   function updateActiveRows() {
@@ -691,11 +718,12 @@
 
   function renderDetail() {
     if (tour.on) {
-      const n = state.places.length;
+      const n = tour.rute.length || state.places.length;
+      const ord = ruteNavne().length ? 'Din rundtur' : 'Rundtur';
       tourBar.hidden = false;
       detailEmpty.hidden = true;
       detailBody.hidden = true;
-      tourCount.textContent = `Rundtur · ${Math.min(tour.i + 1, n)} af ${n}`;
+      tourCount.textContent = `${ord} · ${Math.min(tour.i + 1, n)} af ${n}`;
       tourFill.style.width = (((tour.i + (tour.paused ? 0 : 1)) / n) * 100).toFixed(1) + '%';
       tourPauseBtn.textContent = tour.paused ? '▶ Fortsæt' : '⏸ Pause';
       return;
@@ -744,6 +772,83 @@
     select(i);
   }
 
+  /* ---------- den personlige rute ---------- */
+
+  /** Navnene den besøgende har hakket af — i den rækkefølge de blev valgt. */
+  function ruteNavne() {
+    return state.rute.filter((n) => state.places.some((p) => p.navn === n));
+  }
+
+  function navnTilIndeks(navn) {
+    return state.places.findIndex((p) => p.navn === navn);
+  }
+
+  /** Rækkefølgen turen skal følge: den personlige rute, ellers alle steder. */
+  function turRækkefølge() {
+    const valgte = ruteNavne();
+    return valgte.length ? valgte : state.places.map((p) => p.navn);
+  }
+
+  const stedTal = (n) => `${n} ${n === 1 ? 'sted' : 'steder'}`;
+
+  function hvorLænge(sek) {
+    return sek < 60
+      ? `ca. ${Math.max(5, Math.round(sek / 5) * 5)} sek.`
+      : `ca. ${Math.max(1, Math.round(sek / 60))} min`;
+  }
+
+  /** Hvor lang tid turen varer, i sekunder — regnet på den rækkefølge turen følger. */
+  function ruteSekunder() {
+    return turRækkefølge().reduce((s, n) => {
+      const p = state.places[navnTilIndeks(n)];
+      return s + (p ? (dwellFor(p) + 1300) / 1000 : 0);
+    }, 0);
+  }
+
+  function gemRute() {
+    try { localStorage.setItem(RUTE_LS, JSON.stringify(state.rute)); } catch { }
+  }
+
+  /** Sætter eller fjerner et hak. Kameraet bliver hvor det er. */
+  function skiftHak(navn) {
+    const plads = state.rute.indexOf(navn);
+    if (plads >= 0) state.rute.splice(plads, 1);
+    else state.rute.push(navn);
+    gemRute();
+    renderRute();
+  }
+
+  /** Sætter hele ruten på én gang — brugt af "Alle" og "Ryd". */
+  function sætRute(navne) {
+    state.rute = navne.slice();
+    gemRute();
+    renderRute();
+  }
+
+  /** Opdaterer hak, prikker, linjen og startknappen efter ruten. */
+  function renderRute() {
+    const navne = ruteNavne();
+    state.rows.forEach((li, i) => {
+      const plads = navne.indexOf(state.places[i]?.navn);
+      const pick = li.__pick;
+      if (pick) {
+        pick.classList.toggle('is-valgt', plads >= 0);
+        pick.textContent = plads >= 0 ? String(plads + 1) : '';
+        pick.setAttribute('aria-pressed', plads >= 0 ? 'true' : 'false');
+        pick.title = plads >= 0
+          ? `Sted ${plads + 1} i din rundtur — tryk for at tage det ud`
+          : 'Tag med i din egen rundtur';
+      }
+      state.dots[i]?.classList.toggle('is-valgt', plads >= 0);
+    });
+
+    const n = navne.length;
+    ruteBar.hidden = !n;
+    if (n) ruteTekst.textContent = `${stedTal(n)} valgt · ${hvorLænge(ruteSekunder())}`;
+    if (tourLabel) tourLabel.textContent = n ? 'Se din rundtur' : 'Se rundturen';
+    if (tourMeta) tourMeta.textContent = tourSummary();
+  }
+
   /* ---------- guidet rundtur ---------- */
   /** Hvor længe der hviler på et sted. Længere fortællinger får mere tid. */
   function dwellFor(p) {
@@ -752,17 +857,18 @@
   }
 
   function tourSummary() {
-    const n = state.places.length;
-    if (!n) return 'Ingen steder endnu';
-    const sek = state.places.reduce((s, p) => s + (dwellFor(p) + 1300) / 1000, 0);
-    return `${n} steder · ca. ${Math.max(1, Math.round(sek / 60))} min`;
+    const række = turRækkefølge();
+    if (!række.length) return 'Ingen steder endnu';
+    return `${stedTal(række.length)} · ${hvorLænge(ruteSekunder())}`;
   }
 
   function showCaption(i) {
     const p = state.places[i];
     if (!p) return;
-    // pad2 tager et 0-baseret indeks, så antallet skal ikke igennem den.
-    captionCount.textContent = `Sted ${pad2(i)} af ${String(state.places.length).padStart(2, '0')}`;
+    // Under en tur tælles der i turens rækkefølge, ellers i listens.
+    const n = tour.on && tour.rute.length ? tour.rute.length : state.places.length;
+    const plads = tour.on && tour.rute.length ? tour.i + 1 : i + 1;
+    captionCount.textContent = `Sted ${String(plads).padStart(2, '0')} af ${String(n).padStart(2, '0')}`;
     captionName.textContent = p.navn;
     captionText.textContent = p.tekst || '';
     caption.classList.toggle('has-text', !!p.tekst);
@@ -776,6 +882,7 @@
     if (state.editing) setEditing(false);
     disarm();
     hideHint();
+    tour.rute = turRækkefølge();
     tour.on = true;
     tour.paused = false;
     tour.i = 0;
@@ -788,10 +895,12 @@
   function stepTour() {
     clearTimeout(tour.timer);
     if (!tour.on || tour.paused) return;
-    if (tour.i >= state.places.length) return endTour();
-    const p = state.places[tour.i];
+    if (tour.i >= tour.rute.length) return endTour();
+    const i = navnTilIndeks(tour.rute[tour.i]);
+    if (i < 0) { tour.i++; return stepTour(); }   // stedet er væk fra den fælles fil
+    const p = state.places[i];
     const wait = travelMs(p.x, p.y) + dwellFor(p);
-    select(tour.i);
+    select(i);
     tour.timer = setTimeout(() => {
       if (!tour.on || tour.paused) return;
       tour.i++;
@@ -809,7 +918,7 @@
       return;
     }
     renderDetail();
-    const p = state.places[tour.i];
+    const p = state.places[navnTilIndeks(tour.rute[tour.i])] || { tekst: '' };
     tour.timer = setTimeout(() => {
       if (!tour.on || tour.paused) return;
       tour.i++;
@@ -828,14 +937,15 @@
 
   /** Rundturen er kørt til ende — vis hele illustrationen igen. */
   function endTour() {
-    const n = state.places.length;
+    const n = tour.rute.length || state.places.length;
+    const egen = ruteNavne().length > 0;
     leaveTourUi();
     tour.i = 0;
     state.active = -1;
     updateActiveRows();
     fitView();
     renderDetail();
-    toast(`Rundturen er slut — ${n} steder. Tryk på knappen for at se den igen.`, 5200);
+    toast(`${egen ? 'Din rundtur' : 'Rundturen'} er slut — ${stedTal(n)}. Tryk på knappen for at se den igen.`, 5200);
   }
 
   /**
@@ -1034,6 +1144,8 @@
     const p = state.places[i];
     if (!p) return;
     if (!confirm(`Slet "${p.navn}"?`)) return;
+    const iRuten = state.rute.indexOf(p.navn);
+    if (iRuten >= 0) { state.rute.splice(iRuten, 1); gemRute(); }
     state.places.splice(i, 1);
     if (state.active === i) state.active = -1;
     else if (state.active > i) state.active--;
@@ -1387,6 +1499,11 @@
     tourPauseBtn.addEventListener('click', () => pauseTour());
     $('tourStop').addEventListener('click', () => stopTour(STOP_HINT));
 
+    // den personlige rute
+    $('ruteStart').addEventListener('click', startTour);
+    $('ruteAlle').addEventListener('click', () => sætRute(state.places.map((p) => p.navn)));
+    $('ruteRyd').addEventListener('click', () => sætRute([]));
+
     // nøglelågen
     $('gateForm').addEventListener('submit', (e) => { e.preventDefault(); tryUnlock(); });
     $('gateClose').addEventListener('click', closeGate);
@@ -1414,6 +1531,10 @@
         if (tour.on) stopTour(STOP_HINT);
         disarm();
         if (state.editing) setEditing(false);
+        return;
+      }
+      if (e.key === 'v' || e.key === 'V') {
+        if (state.active >= 0) skiftHak(state.places[state.active].navn);   // hak af/på det sted man ser
         return;
       }
       // tager man selv fat, holder rundturen op — ellers kæmper de to om kameraet
@@ -1475,6 +1596,15 @@
     } else {
       state.places = DEFAULT_PLACES.map((p) => ({ ...p }));
     }
+
+    // Den besøgendes egen rundtur huskes i denne browser. Steder der ikke
+    // længere findes i filen, ryger ud med det samme.
+    try {
+      const gemt = JSON.parse(localStorage.getItem(RUTE_LS) || '[]');
+      const navne = Array.isArray(gemt) ? gemt.filter((n) => typeof n === 'string') : [];
+      state.rute = navne.filter((n) => state.places.some((p) => p.navn === n));
+      if (state.rute.length !== navne.length) gemRute();
+    } catch { state.rute = []; }
 
     document.title = `${meta.navn} — interaktivt kort`;
     $('title').textContent = meta.navn;
