@@ -1,0 +1,188 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1100" width="1600" height="1100" role="img" aria-label="Stiliseret oversigtskort over en forlystelsespark">
+  <defs>
+    <linearGradient id="papir" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fdf9ef"/><stop offset="1" stop-color="#efe3c8"/>
+    </linearGradient>
+    <linearGradient id="graes" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#dcf0c6"/><stop offset="1" stop-color="#b8df9c"/>
+    </linearGradient>
+    <linearGradient id="vand" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b6e0f4"/><stop offset="1" stop-color="#6cb0d8"/>
+    </linearGradient>
+    <linearGradient id="hju" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ef6a5e"/><stop offset="1" stop-color="#c8453f"/>
+    </linearGradient>
+    <pattern id="prikker" width="46" height="46" patternUnits="userSpaceOnUse">
+      <circle cx="12" cy="12" r="2.4" fill="#2f6b1e" opacity="0.05"/>
+    </pattern>
+  </defs>
+
+  <rect width="1600" height="1100" fill="url(#papir)"/>
+
+  <!-- parkens grund -->
+  <path d="M 150 980 C 62 772 92 520 214 358 C 334 198 524 128 762 128 C 1010 128 1200 188 1330 338 C 1450 478 1482 700 1400 902 C 1318 1044 1082 1058 820 1042 C 560 1026 238 1086 150 980 Z"
+        fill="url(#graes)" stroke="#a2cb84" stroke-width="6"/>
+  <path d="M 150 980 C 62 772 92 520 214 358 C 334 198 524 128 762 128 C 1010 128 1200 188 1330 338 C 1450 478 1482 700 1400 902 C 1318 1044 1082 1058 820 1042 C 560 1026 238 1086 150 980 Z"
+        fill="url(#prikker)"/>
+
+  <!-- gangstier -->
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 400 1010 C 412 930 436 862 500 802 C 566 740 646 700 726 674 C 812 646 872 626 908 620 C 968 610 1010 660 1060 692 C 1130 736 1210 730 1276 700 C 1344 668 1392 616 1402 556 C 1412 496 1396 428 1372 372 C 1352 326 1348 300 1330 288"
+          stroke="#e2cb96" stroke-width="38"/>
+    <path d="M 400 1010 C 412 930 436 862 500 802 C 566 740 646 700 726 674 C 812 646 872 626 908 620 C 968 610 1010 660 1060 692 C 1130 736 1210 730 1276 700 C 1344 668 1392 616 1402 556 C 1412 496 1396 428 1372 372 C 1352 326 1348 300 1330 288"
+          stroke="#f4e3bb" stroke-width="30"/>
+    <path d="M 1330 288 C 1268 258 1160 240 1064 238 C 988 236 900 258 816 282 C 764 296 720 306 690 314"
+          stroke="#e2cb96" stroke-width="34"/>
+    <path d="M 1330 288 C 1268 258 1160 240 1064 238 C 988 236 900 258 816 282 C 764 296 720 306 690 314"
+          stroke="#f4e3bb" stroke-width="27"/>
+    <path d="M 690 314 C 616 340 546 386 486 442 C 424 500 380 546 344 596 C 312 640 306 700 330 762 C 352 818 380 890 400 1010"
+          stroke="#e2cb96" stroke-width="34"/>
+    <path d="M 690 314 C 616 340 546 386 486 442 C 424 500 380 546 344 596 C 312 640 306 700 330 762 C 352 818 380 890 400 1010"
+          stroke="#f4e3bb" stroke-width="27"/>
+    <path d="M 726 674 C 760 700 790 742 806 786" stroke="#e2cb96" stroke-width="24"/>
+    <path d="M 726 674 C 760 700 790 742 806 786" stroke="#f4e3bb" stroke-width="18"/>
+    <path d="M 908 620 C 928 552 962 494 1010 452" stroke="#e2cb96" stroke-width="24"/>
+    <path d="M 908 620 C 928 552 962 494 1010 452" stroke="#f4e3bb" stroke-width="18"/>
+  </g>
+
+  <!-- søen -->
+  <g>
+    <ellipse cx="1120" cy="520" rx="192" ry="122" fill="#8ec7b6" opacity="0.35"/>
+    <ellipse cx="1120" cy="516" rx="188" ry="118" fill="url(#vand)" stroke="#5d9fc4" stroke-width="4"/>
+    <ellipse cx="1084" cy="486" rx="96" ry="52" fill="#ffffff" opacity="0.22"/>
+    <ellipse cx="1150" cy="556" rx="120" ry="42" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.4"/>
+    <ellipse cx="1060" cy="470" rx="52" ry="20" fill="none" stroke="#ffffff" stroke-width="2.5" opacity="0.35"/>
+    <rect x="922" y="500" width="62" height="12" rx="4" fill="#a9803f"/>
+    <rect x="930" y="512" width="8" height="18" fill="#8b6a33"/>
+    <rect x="968" y="512" width="8" height="18" fill="#8b6a33"/>
+    <g>
+      <path d="M 1042 470 q 34 16 68 0 l -8 16 q -26 10 -52 0 z" fill="#f6f1e4" stroke="#8b7a5e" stroke-width="3"/>
+      <path d="M 1076 470 v -34 l 26 30 z" fill="#ffd166" stroke="#c58b1f" stroke-width="3"/>
+    </g>
+    <g>
+      <path d="M 1176 574 q 30 14 60 0 l -7 14 q -23 9 -46 0 z" fill="#f6f1e4" stroke="#8b7a5e" stroke-width="3"/>
+      <path d="M 1206 574 v -30 l 23 26 z" fill="#ff9f68" stroke="#c56a1f" stroke-width="3"/>
+    </g>
+    <text x="986" y="612" font-family="system-ui, sans-serif" font-size="30" font-weight="700" fill="#2f6a86" opacity="0.55" letter-spacing="4">SØEN</text>
+  </g>
+
+  <!-- madmarkedet -->
+  <g>
+    <g>
+      <path d="M 656 640 l 48 -58 l 48 58 z" fill="#f2f0e6" stroke="#8b7a5e" stroke-width="3"/>
+      <path d="M 704 582 l 14 -17 l 14 17 z" fill="#e04f3f"/>
+      <rect x="700" y="640" width="8" height="34" fill="#8b7a5e"/>
+      <rect x="672" y="640" width="64" height="10" rx="3" fill="#c69a4e"/>
+    </g>
+    <g>
+      <path d="M 726 656 l 54 -64 l 54 64 z" fill="#f2f0e6" stroke="#8b7a5e" stroke-width="3"/>
+      <path d="M 780 592 l 16 -19 l 16 19 z" fill="#e04f3f"/>
+      <path d="M 748 611 l 16 -19 l 16 19 z" fill="#e04f3f"/>
+      <path d="M 812 611 l 16 -19 l 16 19 z" fill="#e04f3f"/>
+      <rect x="776" y="656" width="8" height="36" fill="#8b7a5e"/>
+      <rect x="744" y="656" width="72" height="10" rx="3" fill="#c69a4e"/>
+    </g>
+    <g>
+      <path d="M 812 630 l 44 -52 l 44 52 z" fill="#f2f0e6" stroke="#8b7a5e" stroke-width="3"/>
+      <path d="M 856 578 l 13 -15 l 13 15 z" fill="#e04f3f"/>
+      <path d="M 830 595 l 13 -15 l 13 15 z" fill="#e04f3f"/>
+      <rect x="852" y="630" width="8" height="32" fill="#8b7a5e"/>
+      <rect x="826" y="630" width="58" height="10" rx="3" fill="#c69a4e"/>
+    </g>
+    <rect x="690" y="690" width="186" height="14" rx="5" fill="#c69a4e" stroke="#a37a33" stroke-width="3"/>
+    <rect x="700" y="704" width="10" height="26" fill="#a37a33"/>
+    <rect x="856" y="704" width="10" height="26" fill="#a37a33"/>
+  </g>
+
+  <!-- scenen -->
+  <g>
+    <path d="M 540 268 a 100 96 0 0 1 200 0 z" fill="#f6efe0" stroke="#8b7a5e" stroke-width="4"/>
+    <path d="M 560 268 a 80 78 0 0 1 160 0 z" fill="#ffd166" opacity="0.5"/>
+    <rect x="528" y="268" width="224" height="54" rx="6" fill="#c99a5b" stroke="#8b6a33" stroke-width="4"/>
+    <rect x="528" y="316" width="224" height="18" rx="4" fill="#8b6a33"/>
+    <rect x="498" y="300" width="30" height="46" rx="5" fill="#4a4a52"/>
+    <rect x="752" y="300" width="30" height="46" rx="5" fill="#4a4a52"/>
+    <circle cx="513" cy="323" r="7" fill="#cfd4db"/>
+    <circle cx="767" cy="323" r="7" fill="#cfd4db"/>
+    <path d="M 604 218 q 24 -30 48 0 M 648 206 q 22 -28 44 0 M 692 218 q 24 -30 48 0" fill="none" stroke="#c8453f" stroke-width="4" opacity="0.7"/>
+  </g>
+
+  <!-- karrusellen -->
+  <g>
+    <ellipse cx="960" cy="266" rx="66" ry="14" fill="#b98f5c" opacity="0.6"/>
+    <circle cx="960" cy="212" r="72" fill="#ffd9e2" stroke="#e0708c" stroke-width="4"/>
+    <circle cx="960" cy="212" r="36" fill="none" stroke="#fdf6ef" stroke-width="72" stroke-dasharray="30 30"/>
+    <circle cx="960" cy="212" r="72" fill="none" stroke="#e0708c" stroke-width="4"/>
+    <circle cx="960" cy="204" r="11" fill="#ffd166" stroke="#c58b1f" stroke-width="3"/>
+    <path d="M 960 193 v -30" stroke="#8b7a5e" stroke-width="4"/>
+    <path d="M 960 163 l 28 10 l -28 10 z" fill="#c8453f"/>
+    <rect x="884" y="256" width="152" height="10" rx="4" fill="#c69a4e"/>
+  </g>
+
+  <!-- pariserhjulet -->
+  <g>
+    <ellipse cx="1300" cy="402" rx="120" ry="20" fill="#2f6b1e" opacity="0.12"/>
+    <path d="M 1300 285 L 1258 400 M 1300 285 L 1342 400 M 1272 340 L 1328 340" stroke="#8b7a5e" stroke-width="11" stroke-linecap="round"/>
+    <circle cx="1300" cy="285" r="95" fill="none" stroke="url(#hju)" stroke-width="9"/>
+    <circle cx="1300" cy="285" r="76" fill="none" stroke="#c8453f" stroke-width="3" opacity="0.55"/>
+    <path d="M 1300 190 V 380 M 1205 285 H 1395 M 1233 218 L 1367 352 M 1367 218 L 1233 352" stroke="#c8453f" stroke-width="4" opacity="0.85"/>
+    <circle cx="1300" cy="285" r="14" fill="#c8453f" stroke="#8f2f2b" stroke-width="3"/>
+    <g fill="#ffd166" stroke="#c58b1f" stroke-width="3">
+      <circle cx="1300" cy="190" r="10"/><circle cx="1367" cy="218" r="10"/>
+      <circle cx="1395" cy="285" r="10"/><circle cx="1367" cy="352" r="10"/>
+      <circle cx="1300" cy="380" r="10"/><circle cx="1233" cy="352" r="10"/>
+      <circle cx="1205" cy="285" r="10"/><circle cx="1233" cy="218" r="10"/>
+    </g>
+    <rect x="1240" y="396" width="120" height="16" rx="6" fill="#c69a4e" stroke="#a37a33" stroke-width="3"/>
+  </g>
+
+  <!-- rutschebanen -->
+  <g>
+    <g fill="none" stroke="#c8453f" stroke-width="9" stroke-linecap="round">
+      <path d="M 232 636 C 274 560 316 500 356 486 C 400 470 428 500 420 528 C 412 556 366 552 366 520 C 366 484 418 462 466 486 C 520 514 546 574 520 622"/>
+    </g>
+    <g fill="none" stroke="#8b7a5e" stroke-width="5" opacity="0.8">
+      <path d="M 250 636 v 26 M 292 596 v 30 M 330 542 v 34 M 372 500 v 30 M 408 508 v 22 M 440 486 v 30 M 486 528 v 30 M 512 574 v 30 M 520 622 v 26"/>
+    </g>
+    <rect x="196" y="640" width="140" height="52" rx="8" fill="#e9dfc6" stroke="#8b7a5e" stroke-width="4"/>
+    <path d="M 196 640 h 140 l -16 -26 h -108 z" fill="#c8453f" stroke="#8f2f2b" stroke-width="4"/>
+    <path d="M 214 640 l 12 -26 M 258 640 l 13 -26 M 302 640 l 13 -26" stroke="#fdf6ef" stroke-width="5"/>
+    <rect x="228" y="662" width="76" height="30" rx="4" fill="#fdf6ef" opacity="0.7" stroke="#8b7a5e" stroke-width="3"/>
+  </g>
+
+  <!-- indgangen -->
+  <g>
+    <path d="M 210 1046 h 380" stroke="#d9c9a3" stroke-width="10" stroke-dasharray="26 18" stroke-linecap="round"/>
+    <rect x="352" y="938" width="24" height="86" rx="6" fill="#c8453f" stroke="#8f2f2b" stroke-width="4"/>
+    <rect x="424" y="938" width="24" height="86" rx="6" fill="#c8453f" stroke="#8f2f2b" stroke-width="4"/>
+    <path d="M 352 946 a 48 40 0 0 1 96 0 z" fill="#ffd166" stroke="#c58b1f" stroke-width="4"/>
+    <text x="400" y="930" text-anchor="middle" font-family="system-ui, sans-serif" font-size="30" font-weight="800" fill="#8f2f2b" letter-spacing="1">HEJ</text>
+    <rect x="368" y="1004" width="64" height="20" rx="5" fill="#8b7a5e"/>
+  </g>
+
+  <!-- træer og bænke -->
+  <g>
+    <g fill="#69a84f" stroke="#4d8438" stroke-width="3">
+      <circle cx="250" cy="300" r="34"/><circle cx="300" cy="252" r="26"/>
+      <circle cx="560" cy="880" r="38"/><circle cx="620" cy="930" r="26"/>
+      <circle cx="1080" cy="912" r="34"/><circle cx="1150" cy="960" r="24"/>
+      <circle cx="1420" cy="780" r="36"/><circle cx="1372" cy="850" r="26"/>
+      <circle cx="1150" cy="140" r="30"/><circle cx="1290" cy="150" r="22"/>
+      <circle cx="430" cy="200" r="28"/><circle cx="820" cy="986" r="30"/>
+      <circle cx="200" cy="700" r="30"/><circle cx="252" cy="800" r="24"/>
+    </g>
+    <g fill="#c69a4e" stroke="#a37a33" stroke-width="3">
+      <rect x="880" y="742" width="76" height="12" rx="4"/>
+      <rect x="890" y="754" width="8" height="18"/><rect x="938" y="754" width="8" height="18"/>
+      <rect x="1180" y="816" width="76" height="12" rx="4"/>
+      <rect x="1190" y="828" width="8" height="18"/><rect x="1238" y="828" width="8" height="18"/>
+    </g>
+  </g>
+
+  <!-- skiltning -->
+  <g font-family="system-ui, sans-serif" font-weight="800" fill="#3f6b2a">
+    <text x="66" y="86" font-size="46" letter-spacing="1">FORLYSTELSESPARKEN</text>
+    <text x="68" y="126" font-size="22" font-weight="600" fill="#7d8a6a" letter-spacing="6">ÅBENT ALLE DAGE 10–22</text>
+    <text x="400" y="1072" text-anchor="middle" font-size="26" letter-spacing="8" fill="#8f2f2b">INDGANG</text>
+  </g>
+</svg>

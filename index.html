@@ -12,6 +12,9 @@
 
 <div class="app" id="app">
 
+  <!-- levende baggrund: to langsomme lysglimt bag illustrationen -->
+  <div class="aurora" aria-hidden="true"><span></span><span></span><span></span></div>
+
   <!-- Illustrationen -->
   <div class="scene" id="scene">
     <div class="world" id="world">
@@ -46,6 +49,19 @@
 
   <!-- Menupanelet -->
   <aside class="panel" id="panel" aria-label="Steder">
+
+    <!-- Hvilken illustration man ser på: det fælles kort eller ens egen gennemgang -->
+    <div class="kilde" id="kilde">
+      <button class="kilde__valg" id="kildeValg" type="button" aria-haspopup="listbox" aria-expanded="false">
+        <span class="kilde__prik" aria-hidden="true"></span>
+        <span class="kilde__navn" id="kildeNavn">Skarresø</span>
+        <span class="kilde__art" id="kildeArt">fælles kort</span>
+        <span class="kilde__pil" aria-hidden="true">▾</span>
+      </button>
+      <button class="kilde__ny" id="kildeNy" type="button" title="Lav en gennemgang af din egen illustration">＋ Ny</button>
+    </div>
+    <div class="kilde__liste" id="kildeListe" hidden></div>
+
     <header class="panel__head">
       <p class="kicker" id="kicker">Interaktivt kort</p>
       <h1 class="title" id="title">Skarresø</h1>
@@ -141,10 +157,66 @@
     </form>
   </div>
 
+  <!-- Lav sin egen gennemgang -->
+  <div class="wiz" id="wiz" hidden>
+    <div class="wiz__bag" id="wizBag"></div>
+    <div class="wiz__kort" role="dialog" aria-modal="true" aria-labelledby="wizTitel">
+      <header class="wiz__top">
+        <div>
+          <p class="wiz__kicker">Egen illustration</p>
+          <p class="wiz__titel" id="wizTitel">Lav din egen gennemgang</p>
+        </div>
+        <button class="wiz__luk" id="wizLuk" type="button" aria-label="Luk">✕</button>
+      </header>
+
+      <ol class="wiz__skinne" id="wizSkinne">
+        <li data-trin="1"><b>1</b> Grafik</li>
+        <li data-trin="2"><b>2</b> Steder</li>
+        <li data-trin="3"><b>3</b> Del</li>
+      </ol>
+      <span class="wiz__fyld" id="wizFyld" aria-hidden="true"></span>
+
+      <div class="wiz__trin" id="wizTrin1">
+        <div class="drop" id="wizDrop" tabindex="0" role="button" aria-label="Vælg en billedfil">
+          <span class="drop__ikon" aria-hidden="true">⇪</span>
+          <strong class="drop__titel">Træk et billede herind</strong>
+          <span class="drop__under">eller klik for at vælge en fil</span>
+          <span class="drop__typer">JPG · PNG · WebP · SVG</span>
+        </div>
+        <p class="wiz__note">Landkort, oversigtskort, teknisk tegning, kunstværk, festivalplakat — hvad som helst med noget at fortælle. Billedet bliver i din browser.</p>
+        <p class="wiz__eller"><span>eller start fra et eksempel</span></p>
+        <div class="proever" id="wizProever"></div>
+      </div>
+
+      <div class="wiz__trin" id="wizTrin3" hidden>
+        <p class="wiz__tal" id="wizTal"></p>
+        <label class="felt"><span class="felt__navn">Navn på gennemgangen</span>
+          <input type="text" id="wizNavn" maxlength="60" placeholder="Fx Forlystelsesparken"></label>
+        <div class="wiz__knapper">
+          <button class="pill pill--accent" id="wizKoer" type="button">▶ Kør gennemgangen</button>
+          <button class="pill" id="wizFil2" type="button">Send som fil</button>
+          <button class="pill" id="wizPakke" type="button">Hent pakke</button>
+        </div>
+        <p class="wiz__note"><b>Fil</b> er én side, du kan sende eller lægge på nettet. <b>Pakke</b> er en zip til at hoste selv.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Trin 2: sæt steder på sin egen illustration -->
+  <div class="lav" id="lavBar" hidden>
+    <span class="lav__trin">Trin 2 af 3</span>
+    <span class="lav__tekst" id="lavTekst"></span>
+    <span class="lav__luft"></span>
+    <button class="pill" id="lavNyt" type="button">＋ Nyt sted</button>
+    <button class="pill" id="lavFortryd" type="button">Fortryd</button>
+    <button class="pill pill--accent" id="lavVidere" type="button">Videre</button>
+  </div>
+
   <p class="hint" id="hint">Træk for at panorere · rul for at zoome</p>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <input type="file" id="imageInput" accept="image/*" hidden>
+  <input type="file" id="wizFil" accept="image/*" hidden>
   <input type="file" id="jsonInput" accept="application/json,.json" hidden>
 </div>
 

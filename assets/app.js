@@ -28,6 +28,16 @@
   const DRAFT_LS = 'skarreso.kladde.v1';
   const POLL_MS = 15000;                     // hvor tit der lyttes efter ændringer
 
+  /* Egne gennemgange: enhver kan lave en gennemgang af sin egen illustration.
+     De ligger i browseren (IndexedDB) og kan sendes videre som én selvstændig
+     fil eller hentes som en pakke til eget webhotel. */
+  const EGEN_LS = 'skarreso.egen.aktiv.v1';  // hvilken egen gennemgang der vises
+  const EGEN_LISTE = 'egenListe';            // listen af egne gennemgange
+  const EGEN_NOEGLE = (id) => 'egen:' + id;
+  const EGEN_FULD = 2600;                    // bredde på fuld opløsning
+  const EGEN_LET = 1500;                     // bredde på forhåndsbilledet
+  const IND = window.__GENNEMGANG || null;    // en delt, selvstændig gennemgang
+
   const IDB_NAME = 'skarreso';
   const MIN_ZOOM = 1;
   const MAX_ZOOM = 7;
@@ -51,6 +61,41 @@
     { navn: 'Vaskeriet',           x: .190, y: .690, zoom: 3.4, tekst: 'Vask, opvask og tørring. Cyklen kører vasketøjet frem og tilbage.' },
     { navn: 'Sneglebingo',         x: .120, y: .870, zoom: 3.6, tekst: 'Find vinbjergsneglen med nummer på ryggen — så har du vundet.' },
     { navn: 'Skarresø',            x: .770, y: .855, zoom: 3.4, tekst: 'Søen med åkander og en robåd, der altid er lige ved at lette.' }
+  ];
+
+  /* To illustrationer at øve sig på. Stederne sidder præcis på det, der er tegnet. */
+  const PRØVER = [
+    {
+      id: 'park',
+      navn: 'Forlystelsesparken',
+      fil: 'examples/forlystelsespark.svg',
+      om: 'Oversigtskort med sø, pariserhjul og madboder',
+      steder: [
+        { navn: 'Indgangen', x: .250, y: .895, zoom: 3.0, tekst: 'Billetten klippes under buen, og så er man inde. Herfra kan man tage runden i sin egen rækkefølge.' },
+        { navn: 'Madmarkedet', x: .488, y: .582, zoom: 3.1, tekst: 'Tre boder med stribede sejl: vafler, is og noget at drikke. Borde og bænke står lige bagved.' },
+        { navn: 'Søen', x: .700, y: .469, zoom: 3.0, tekst: 'Vandet midt i parken med robåde og en lille bro. Om aftenen spejler lamperne sig i overfladen.' },
+        { navn: 'Pariserhjulet', x: .8125, y: .259, zoom: 3.0, tekst: 'Hjulet løfter en op over træerne, og herfra kan man se hele parken og landskabet bagved.' },
+        { navn: 'Karrusellen', x: .600, y: .193, zoom: 3.2, tekst: 'Det stribede tag drejer langsomt rundt, og hestene er malet i alle farver. Den kører lige så stille, at de mindste kan være med.' },
+        { navn: 'Rutschebanen', x: .166, y: .605, zoom: 3.0, tekst: 'Turen starter i den røde station, tager bakken med hvinende hjul og drejer en enkelt tur i luften.' },
+        { navn: 'Scenen', x: .400, y: .273, zoom: 3.2, tekst: 'Musikken spiller fra den gule skal om eftermiddagen, og der er plads til at danse foran.' }
+      ]
+    },
+    {
+      id: 'tegning',
+      navn: 'Teknisk tegning',
+      fil: 'examples/teknisk-tegning.svg',
+      om: 'Blueprint-snit med nummererede bygningsdele',
+      steder: [
+        { navn: 'Tagkonstruktionen', x: .6563, y: .273, zoom: 2.8, tekst: 'Spær i træ for hver 600 mm, lagt op over remmen. Den stiplede linje viser undertaget.' },
+        { navn: 'Ovenlyset', x: .3469, y: .286, zoom: 3.2, tekst: 'Ovenlysvinduet ligger i tagfladen mod vest og giver lys ind over køkkenbordet hele eftermiddagen.' },
+        { navn: 'Skorstenen', x: .5513, y: .218, zoom: 3.0, tekst: 'Skorstenen går gennem taget og mures i tegl. Den rækker 500 mm over kippen.' },
+        { navn: 'Ydervæggen', x: .196, y: .545, zoom: 3.2, tekst: 'Ydervæggen er vist i snit: træskelet med udvendig beklædning, og skråstregerne er isoleringen.' },
+        { navn: 'Vinduet', x: .4375, y: .545, zoom: 3.2, tekst: 'Vinduet er delt i tre ruder og sidder med underkanten 900 mm over gulvet.' },
+        { navn: 'Gulvet', x: .5625, y: .719, zoom: 3.0, tekst: 'Gulvpladen ligger på bjælker med 600 mm afstand, så den ikke giver sig, når man går på den.' },
+        { navn: 'Fundamentet', x: .625, y: .798, zoom: 3.0, tekst: 'Fundamentet er støbt i beton og går 900 mm ned under terræn. Skråstregerne markerer betonen.' },
+        { navn: 'Trappen', x: .7188, y: .636, zoom: 3.2, tekst: 'Trappen har otte trin fra gulvet i stuen og op til hemsen. Stigningen er 190 mm.' }
+      ]
+    }
   ];
 
   /* ---------- dom ---------- */
@@ -96,6 +141,26 @@
   const tourLabel = document.querySelector('.tour-start__label');
   const ruteBar = $('ruteBar');
   const ruteTekst = $('ruteTekst');
+  const kilde = $('kilde');
+  const kildeValg = $('kildeValg');
+  const kildeNavn = $('kildeNavn');
+  const kildeArt = $('kildeArt');
+  const kildeListe = $('kildeListe');
+  const kildeNy = $('kildeNy');
+  const wiz = $('wiz');
+  const wizBag = $('wizBag');
+  const wizDrop = $('wizDrop');
+  const wizFil = $('wizFil');
+  const wizPrøver = $('wizProever');
+  const wizNavn = $('wizNavn');
+  const wizTal = $('wizTal');
+  const wizTrin1 = $('wizTrin1');
+  const wizTrin3 = $('wizTrin3');
+  const wizSkinne = $('wizSkinne');
+  const wizFyld = $('wizFyld');
+  const lavBar = $('lavBar');
+  const lavTekst = $('lavTekst');
+  const lavNyt = $('lavNyt');
 
   /* ---------- tilstand ---------- */
   const meta = { navn: DEFAULT_TITLE };
@@ -113,6 +178,10 @@
     draft: false,      // er der en ikke-udgivet kladde i gang?
     draftText: '',
     imageDirty: false, // er der et nyt billede, der ikke er hentet ud?
+    vis: 'faelles',    // hvilken kilde der vises: fælles kort, egen gennemgang eller delt fil
+    ejne: [],          // listen af egne gennemgange (kun navn og tal)
+    egen: null,        // den viste/aktive egen gennemgang med billede og steder
+    lav: false,        // er vi ved at sætte steder på en egen gennemgang?
     shared: null,      // senest hentede udgave af den fælles fil
     sharedText: '',
     pendingText: '',   // det vi sidst hentede ud, men endnu ikke har lagt op
@@ -124,7 +193,9 @@
   let vw = 0, vh = 0, visL = 0, visR = 0, visT = 0, visB = 0;
   let stopTween = null;
   let miniReady = false;
-  let fraLink = null;       // en delt rute fra adressen (#rute=…), som skal åbne sig selv
+  let fraLink = null;       // en delt rute fra adressen (#rute=…) eller fra en tilsendt fil
+  let FULD = DEFAULT_IMAGE; // filen/adressen med fuld opløsning i den viste kilde
+  let fællesNavn = DEFAULT_TITLE;  // navnet på det fælles kort, uanset hvad der vises
 
   /* ---------- småting ---------- */
   /** Filnavn uden danske tegn og dobbelte bindestreger. */
@@ -336,13 +407,20 @@
     if (tour.on && tour.i >= tour.rute.length) tour.i = 0;
     renderMenu();
     buildMarkers();
-    state.dots.forEach((el) => el.classList.toggle('is-editing', state.editing));
+    state.dots.forEach((el) => el.classList.toggle('is-editing', redigerer()));
     renderDetail();
     applyView();
   }
 
+  /** Retter man i en egen gennemgang, kræver det ingen nøgle — den gemmes bare. */
+  const redigerer = () => state.editing || state.lav;
+
+  /** Ligger den viste illustration allerede i fuld opløsning? */
+  const erFuld = (src) => !!FULD && (src === FULD || String(src).endsWith(FULD));
+
   /** Kaldes hver gang et sted ændres. Starter en kladde, hvis nøglen er låst op. */
   function touch() {
+    if (state.vis === 'egen') { gemEgenNu(); renderLav(); opdaterKildeStribe(); return; }
     if (!state.unlocked) return;
     if (!state.draft) { state.draft = true; toast('Ændringen ligger i en kladde, indtil du henter kortet ud.', 4200); }
     renderBadge();
@@ -362,7 +440,7 @@
   /* ---------- den fælles fil følges live ---------- */
   let polling = false;
   async function pollShared(silent) {
-    if (document.hidden || state.draft || !state.shared) return;
+    if (document.hidden || state.draft || !state.shared || state.vis !== 'faelles') return;
     if (polling) return;
     polling = true;
     try {
@@ -522,10 +600,10 @@
         e.stopPropagation();
         if (el.__dragged) { el.__dragged = false; return; }
         select(i);
-        if (state.editing) toggleEditor(i, true);
+        if (redigerer()) toggleEditor(i, true);
       });
       el.addEventListener('pointerdown', (e) => {
-        if (!state.editing) return;
+        if (!redigerer()) return;
         startMarkerDrag(e, i);
       });
       markersEl.appendChild(el);
@@ -621,7 +699,7 @@
       btn.querySelector('.row__name').textContent = p.navn;
       btn.addEventListener('click', () => {
         select(i);
-        if (state.editing) toggleEditor(i, true);
+        if (redigerer()) toggleEditor(i, true);
       });
       btn.addEventListener('pointerenter', () => {
         markersEl.classList.remove('is-muted');
@@ -699,9 +777,9 @@
   function updateActiveRows() {
     state.rows.forEach((li, i) => {
       li.classList.toggle('is-active', i === state.active);
-      if (!state.editing || i !== state.active) li.classList.remove('is-open');
+      if (!redigerer() || i !== state.active) li.classList.remove('is-open');
     });
-    if (state.editing && state.active >= 0) state.rows[state.active]?.classList.add('is-open');
+    if (redigerer() && state.active >= 0) state.rows[state.active]?.classList.add('is-open');
   }
 
   function toggleEditor(i, force) {
@@ -902,6 +980,503 @@
     }
     // Kunne vi ikke lægge det i udklipsholderen, får man det at se, så det kan markeres selv.
     prompt('Kopiér linket til din rundtur:', adresse);
+  }
+
+  /* ---------- egne gennemgange: enhver kan lave sin egen rundtur ---------- */
+
+  /** Listen af egne gennemgange. Billederne ligger i IndexedDB; listen er lille. */
+  async function læsEgenListe() {
+    try { const v = await idb.get(EGEN_LISTE); state.ejne = Array.isArray(v) ? v : []; }
+    catch { state.ejne = []; }
+    return state.ejne;
+  }
+
+  async function gemEgenListe() {
+    try { await idb.put(EGEN_LISTE, state.ejne); } catch { /* privat tilstand */ }
+  }
+
+  function huskEgen(id) {
+    try { id ? localStorage.setItem(EGEN_LS, id) : localStorage.removeItem(EGEN_LS); } catch { }
+  }
+  function husketEgen() {
+    try { return localStorage.getItem(EGEN_LS) || ''; } catch { return ''; }
+  }
+
+  let egenTimer = 0;
+  /** Gemmer den gennemgang, der er på skærmen. Straks nok til at intet tabes. */
+  function gemEgenNu(medDetSamme) {
+    const gang = state.egen;
+    if (!gang) return undefined;
+    gang.places = copyPlaces(state.places);
+    gang.opdateret = Date.now();
+    const skriv = async () => {
+      try {
+        await idb.put(EGEN_NOEGLE(gang.id), gang);
+        const post = { id: gang.id, navn: gang.navn, antal: gang.places.length, opdateret: gang.opdateret };
+        const i = state.ejne.findIndex((g) => g.id === gang.id);
+        if (i >= 0) state.ejne[i] = post; else state.ejne.push(post);
+        await gemEgenListe();
+      } catch {
+        toast('Kunne ikke gemme i denne browser. Gennemgangen lever, til fanen lukkes.', 6000);
+      }
+    };
+    clearTimeout(egenTimer);
+    if (medDetSamme) return skriv();
+    egenTimer = setTimeout(skriv, 280);
+    return undefined;
+  }
+
+  async function læsEgen(id) {
+    try {
+      const v = await idb.get(EGEN_NOEGLE(id));
+      return v && Array.isArray(v.places) && v.billede ? v : null;
+    } catch { return null; }
+  }
+
+  async function sletEgen(id) {
+    try { await idb.del(EGEN_NOEGLE(id)); } catch { }
+    state.ejne = state.ejne.filter((g) => g.id !== id);
+    await gemEgenListe();
+    if (husketEgen() === id) huskEgen('');
+  }
+
+  /** Skifter kilde ved at huske valget og indlæse siden igen, så alt nulstilles. */
+  function skiftTil(id) {
+    huskEgen(id || '');
+    skjulKildeListe();
+    location.reload();
+  }
+
+  function opdaterKildeStribe() {
+    const gang = state.vis === 'egen' ? state.egen : null;
+    // Et link med ruten virker kun, hvor stederne findes — altså på det fælles
+    // kort. Egne gennemgange sendes som fil eller pakke i stedet.
+    $('ruteDel').hidden = state.vis !== 'faelles';
+    kildeNavn.textContent = gang ? gang.navn : (IND ? (IND.navn || 'Tilsendt gennemgang') : meta.navn);
+    kildeArt.textContent = IND ? 'tilsendt fil'
+      : gang ? `${stedTal(gang.places.length)} · din` : 'fælles kort';
+  }
+
+  function skjulKildeListe() {
+    kildeListe.hidden = true;
+    kildeValg.setAttribute('aria-expanded', 'false');
+  }
+
+  function visKildeListe() {
+    const åbn = kildeListe.hidden;
+    kildeListe.hidden = !åbn;
+    kildeValg.setAttribute('aria-expanded', åbn ? 'true' : 'false');
+    if (åbn) byggKildeListe();
+  }
+
+  function byggKildeListe() {
+    kildeListe.innerHTML = '';
+    const nu = husketEgen();
+    const rækker = [
+      { id: '', navn: fællesNavn, art: 'fælles kort' },
+      ...state.ejne.slice().sort((a, b) => (b.opdateret || 0) - (a.opdateret || 0))
+        .map((g) => ({ id: g.id, navn: g.navn, art: `${stedTal(g.antal)} · din gennemgang` }))
+    ];
+    rækker.forEach((k, i) => {
+      const rad = document.createElement('div');
+      rad.className = 'kort' + ((k.id ? k.id === nu : !nu) ? ' is-nu' : '');
+      rad.style.setProperty('--i', i);
+
+      const vælg = document.createElement('button');
+      vælg.type = 'button';
+      vælg.className = 'kort__valg';
+      const nm = document.createElement('span');
+      nm.className = 'kort__navn';
+      nm.textContent = k.navn;
+      const ar = document.createElement('span');
+      ar.className = 'kort__art';
+      ar.textContent = k.art;
+      nm.appendChild(ar);
+      vælg.appendChild(nm);
+      vælg.addEventListener('click', () => {
+        if (!k.id && !nu) return skjulKildeListe();      // vi er allerede der
+        skiftTil(k.id);
+      });
+      rad.appendChild(vælg);
+
+      if (k.id) {
+        const slet = document.createElement('button');
+        slet.type = 'button';
+        slet.className = 'kort__slet';
+        slet.textContent = 'Slet';
+        slet.title = `Slet “${k.navn}”`;
+        slet.addEventListener('click', async (e) => {
+          e.stopPropagation();
+          if (!confirm(`Slet gennemgangen “${k.navn}”?`)) return;
+          const varAktiv = state.vis === 'egen' && nu === k.id;
+          await sletEgen(k.id);
+          if (varAktiv) return skiftTil('');
+          byggKildeListe();
+          opdaterKildeStribe();
+          toast('Gennemgangen er slettet.');
+        });
+        rad.appendChild(slet);
+      }
+      kildeListe.appendChild(rad);
+    });
+    if (!state.ejne.length) {
+      const tom = document.createElement('p');
+      tom.className = 'kort__tom';
+      tom.textContent = 'Ingen egne gennemgange endnu — tryk ＋ Ny for at lave en.';
+      kildeListe.appendChild(tom);
+    }
+  }
+
+  /* ---------- tryllebinderen: fra billede til gennemgang ---------- */
+
+  let lavId = null;       // id på den gennemgang, der er under opbygning
+  let wizTrinNu = 1;      // hvilket trin i tryllebinderen der står åbent
+
+  /** Koder et billede til to WebP-størrelser — samme vej som redigeringen bruger. */
+  async function kodBillede(kilde, fuldSide, letSide) {
+    const im = await new Promise((res, rej) => {
+      const i = new Image();
+      i.onload = () => res(i);
+      i.onerror = () => rej(new Error('kunne ikke læse billedet'));
+      i.src = kilde;
+    });
+    const full = await encodeWebp(im, fuldSide || EGEN_FULD, .84);
+    const low = await encodeWebp(im, letSide || EGEN_LET, .72);
+    if (!full) throw new Error('kunne ikke kode billedet');
+    return { full, low };
+  }
+
+  const navnFraFil = (filnavn) => {
+    const rå = String(filnavn || '').replace(/\.[a-z0-9]+$/i, '').replace(/[-_]+/g, ' ').trim();
+    return rå ? rå.slice(0, 60) : 'Min gennemgang';
+  };
+
+  function wizTrin(n) {
+    wizTrinNu = n;
+    [...wizSkinne.children].forEach((li) => {
+      const t = Number(li.dataset.trin);
+      li.classList.toggle('is-aktiv', t === n);
+      li.classList.toggle('is-klaret', t < n);
+    });
+    wizFyld.style.width = ((n / 3) * 100).toFixed(1) + '%';
+    wizTrin1.hidden = n !== 1;
+    wizTrin3.hidden = n !== 3;
+    wiz.querySelector('.wiz__kort').scrollTop = 0;
+    if (n === 3) {
+      const gang = state.egen;
+      wizTal.textContent = `${stedTal(state.places.length)} klar til at vise frem`;
+      wizNavn.value = gang && gang.navn !== 'Min gennemgang' ? gang.navn : '';
+      setTimeout(() => wizNavn.focus(), 220);
+    }
+  }
+
+  function byggPrøver() {
+    wizPrøver.innerHTML = '';
+    PRØVER.forEach((p, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'prove';
+      b.style.setProperty('--i', i);
+      const im = document.createElement('img');
+      im.src = p.fil;
+      im.alt = p.navn;
+      im.loading = 'lazy';
+      const wrap = document.createElement('span');
+      wrap.className = 'prove__tekst';
+      const nm = document.createElement('span');
+      nm.className = 'prove__navn';
+      nm.textContent = p.navn;
+      const om = document.createElement('span');
+      om.className = 'prove__om';
+      om.textContent = p.om;
+      wrap.append(nm, om);
+      b.append(im, wrap);
+      b.addEventListener('click', () => vælgPrøve(i, b));
+      wizPrøver.appendChild(b);
+    });
+  }
+
+  function åbnVælger() {
+    if (tour.on) stopTour(STOP_HINT);
+    if (state.lav) slutLav();
+    if (!wizPrøver.children.length) byggPrøver();
+    lavBar.hidden = true;
+    wiz.hidden = false;
+    wizTrin(1);
+  }
+
+  /** Lukker tryllebinderen. Er der allerede sat steder, går man videre med dem. */
+  function lukVælger() {
+    wiz.hidden = true;
+    const midtI = state.egen && state.egen.id === lavId && state.places.length;
+    if (midtI) {
+      state.lav = true;
+      lavBar.hidden = false;
+      renderLav();
+    }
+  }
+
+  async function vælgFil(file, knap) {
+    if (!file || !String(file.type || '').startsWith('image/')) {
+      toast('Vælg en billedfil — JPG, PNG, WebP eller SVG.');
+      return;
+    }
+    if (knap) knap.disabled = true;
+    toast('Læser illustrationen …', 20000);
+    let url = '';
+    try {
+      url = URL.createObjectURL(file);
+      const billede = await kodBillede(url);
+      await startLav({ navn: navnFraFil(file.name), billede, steder: [] });
+    } catch {
+      toast('Kunne ikke læse billedet. Prøv JPG, PNG, WebP eller SVG.', 6000);
+    } finally {
+      if (url) URL.revokeObjectURL(url);
+      if (knap) knap.disabled = false;
+    }
+  }
+
+  async function vælgPrøve(i, knap) {
+    const prøve = PRØVER[i];
+    if (!prøve) return;
+    if (knap) knap.disabled = true;
+    toast('Henter eksemplet …', 20000);
+    try {
+      const billede = await kodBillede(prøve.fil);
+      await startLav({ navn: prøve.navn, billede, steder: prøve.steder });
+    } catch {
+      toast('Kunne ikke hente eksemplet. Prøv igen fra den udgivne side.', 6000);
+    } finally {
+      if (knap) knap.disabled = false;
+    }
+  }
+
+  /** Tager imod en ny illustration og gør den til en gennemgang, man kan rette i. */
+  async function startLav({ navn, billede, steder }) {
+    if (!lavId) lavId = 'g' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    state.egen = {
+      id: lavId,
+      navn: (navn || 'Min gennemgang').slice(0, 60),
+      places: (steder || []).map(cleanPlace),
+      billede,
+      opdateret: Date.now()
+    };
+    state.vis = 'egen';
+    state.lav = true;
+    state.places = copyPlaces(state.egen.places);
+    state.active = -1;
+    state.rute = [];
+    huskEgen(lavId);
+
+    FULD = URL.createObjectURL(billede.full);
+    await loadImageFrom(FULD, true);
+    renderMenu();
+    buildMarkers();
+    state.dots.forEach((el) => el.classList.toggle('is-editing', true));
+    renderDetail();
+    renderBadge();
+    renderRute();
+    opdaterKildeStribe();
+    wiz.hidden = true;
+    app.classList.add('is-lav');
+    lavBar.hidden = false;
+    fitView();
+    paintMini();
+    arm();
+    renderLav();
+    gemEgenNu();
+    toast(state.places.length
+      ? `${stedTal(state.places.length)} fra eksemplet står klar — ret dem, eller sæt flere.`
+      : 'Klik på illustrationen, hvor det første sted ligger.', 5600);
+  }
+
+  function renderLav() {
+    if (!lavBar || lavBar.hidden) return;
+    const n = state.places.length;
+    lavTekst.textContent = n
+      ? `${stedTal(n)} sat — klik for at føje flere til`
+      : 'Klik på illustrationen for at sætte et sted';
+    lavNyt.classList.toggle('is-armed', state.armed);
+    lavNyt.textContent = state.armed ? 'Klik på billedet …' : '＋ Nyt sted';
+  }
+
+  /** Retter man i en gennemgang, man allerede har, kræver det ingen nøgle. */
+  function begyndLav() {
+    if (!state.egen) return;
+    state.lav = true;
+    app.classList.add('is-lav');
+    lavBar.hidden = false;
+    state.dots.forEach((el) => el.classList.toggle('is-editing', true));
+    arm();
+    renderLav();
+    editToggleText.textContent = 'Færdig';
+    toast('Ret stederne direkte: klik for at flytte, træk i prikkerne, eller skriv i listen.', 5200);
+  }
+
+  async function slutLav() {
+    state.lav = false;
+    disarm();
+    lavBar.hidden = true;
+    app.classList.remove('is-lav');
+    state.dots.forEach((el) => el.classList.toggle('is-editing', false));
+    editToggleText.textContent = 'Redigér steder';
+    await gemEgenNu(true);
+    opdaterKildeStribe();
+    toast('Gennemgangen er gemt i denne browser.', 4200);
+  }
+
+  /** Afslutter trin 3: navngiver, gemmer og kører gennemgangen. */
+  async function afslutLav() {
+    if (!state.egen) return;
+    const navn = (wizNavn.value.trim() || state.egen.navn || 'Min gennemgang').slice(0, 60);
+    state.egen.navn = navn;
+    meta.navn = navn;
+    $('title').textContent = navn;
+    document.title = `${navn} — gennemgang`;
+    state.lav = false;
+    disarm();
+    lavBar.hidden = true;
+    app.classList.remove('is-lav');
+    state.dots.forEach((el) => el.classList.toggle('is-editing', false));
+    await gemEgenNu(true);
+    wiz.hidden = true;
+    opdaterKildeStribe();
+    if (state.places.length) {
+      fitView();
+      startTour();
+    } else {
+      toast('Der er ingen steder endnu — tryk ＋ Ny og klik på illustrationen.', 5200);
+    }
+  }
+
+  async function afbrydLav() {
+    const navn = state.egen?.navn || 'gennemgangen';
+    if (!confirm(`Kassér “${navn}” og gå tilbage?`)) return;
+    if (state.egen) await sletEgen(state.egen.id);
+    huskEgen('');
+    lavId = null;
+    location.reload();
+  }
+
+  /* ---------- sende en gennemgang videre ---------- */
+
+  let skabelon = null;
+  /** Siden, stilene og koden hentes én gang og lægges ind i den fil, man sender. */
+  async function hentSkabelon() {
+    if (skabelon) return skabelon;
+    const hent = async (sti) => {
+      const r = await fetch(sti, { cache: 'no-store' });
+      if (!r.ok) throw new Error(`kunne ikke hente ${sti}`);
+      return r.text();
+    };
+    const [html, css, js] = await Promise.all([hent('index.html'), hent('assets/app.css'), hent('assets/app.js')]);
+    if (!html.includes('href="assets/app.css"') || !html.includes('src="assets/app.js"')) {
+      throw new Error('siden har ændret sig — prøv igen fra den udgivne side');
+    }
+    skabelon = { html, css, js };
+    return skabelon;
+  }
+
+  /** JSON der kan stå inde i et script-tag uden at kunne bryde ud af det. */
+  const sikkerJson = (o) => JSON.stringify(o)
+    .replace(/</g, '\\u003c').replace(/>/g, '\\u003e')
+    .replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+
+  const escapeHtml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  const blobTilDataUrl = (blob) => new Promise((res, rej) => {
+    const fr = new FileReader();
+    fr.onload = () => res(String(fr.result));
+    fr.onerror = () => rej(new Error('kunne ikke læse billedet'));
+    fr.readAsDataURL(blob);
+  });
+
+  /**
+   * Bygger den færdige side. indlejret=true lægger billedet ind i filen selv,
+   * så den kan sendes som én fil; ellers peger den på billedfiler ved siden af.
+   */
+  async function byggSide(gang, indlejret) {
+    const sk = await hentSkabelon();
+    const base = slug(gang.navn);
+    const billede = indlejret
+      ? {
+        full: await blobTilDataUrl(gang.billede.full),
+        low: gang.billede.low ? await blobTilDataUrl(gang.billede.low) : ''
+      }
+      : { full: `${base}-web.webp`, low: `${base}-low.webp` };
+    const data = {
+      navn: gang.navn,
+      udgave: 1,
+      places: gang.places,
+      rute: state.egen && gang.id === state.egen.id ? ruteNavne() : [],
+      billede
+    };
+    // Koden lægges ind midt i filen, så den må ikke selv kunne lukke script-tagget.
+    const js = sk.js.replace(/<\/script/gi, '<\\/script');
+    const css = sk.css.replace(/<\/style/gi, '<\\/style');
+    return sk.html
+      .replace(/<title>[^<]*<\/title>/, `<title>${escapeHtml(gang.navn)} — gennemgang</title>`)
+      .replace('<link rel="stylesheet" href="assets/app.css">', `<style>\n${css}\n</style>`)
+      .replace('<script src="assets/app.js"></script>',
+        '<script>window.__GENNEMGANG=' + sikkerJson(data) + ';</script>\n<script>\n' + js + '\n</script>');
+  }
+
+  /** Én selvstændig HTML-fil: billedet ligger indeni, og den kører uden server. */
+  async function sendSomFil(gang) {
+    const g = gang || state.egen;
+    if (!g) return;
+    toast('Samler filen …', 20000);
+    try {
+      const html = await byggSide(g, true);
+      download(new Blob([html], { type: 'text/html;charset=utf-8' }), slug(g.navn) + '.html');
+      toast('Filen er hentet. Send den videre — modtageren åbner den bare i sin browser.', 7500);
+    } catch (e) {
+      toast('Kunne ikke samle filen: ' + e.message, 7000);
+    }
+  }
+
+  const laesMig = (g, base) => [
+    `${g.navn} — en gennemgang`,
+    '',
+    'Sådan får du den på nettet:',
+    '1. Læg alle filerne i denne mappe op på din egen webadresse',
+    '   (webhotel, GitHub Pages, Netlify eller hvad du har).',
+    '2. Åbn index.html — det er forsiden og hele gennemgangen.',
+    '3. places.json er stederne, hvis du vil rette teksten bagefter.',
+    '',
+    `Billedet ligger som ${base}-web.webp (fuld opløsning) og ${base}-low.webp`,
+    'som det lette billede, der vises først.',
+    '',
+    'Der skal ingen server og ingen programmer til — filerne er hele siden.',
+    ''
+  ].join('\n');
+
+  /** Zip til at hoste selv: index.html, billedfilerne, places.json og en læs-mig. */
+  async function hentPakke(gang) {
+    const g = gang || state.egen;
+    if (!g) return;
+    toast('Samler pakken …', 20000);
+    try {
+      const base = slug(g.navn);
+      const html = await byggSide(g, false);
+      const json = JSON.stringify({
+        navn: g.navn,
+        udgave: 1,
+        opdateret: new Date().toISOString().slice(0, 19) + 'Z',
+        places: g.places
+      }, null, 2) + '\n';
+      const filer = [
+        { name: 'index.html', blob: new Blob([html], { type: 'text/html;charset=utf-8' }) },
+        { name: `${base}-web.webp`, blob: g.billede.full },
+        { name: `${base}-low.webp`, blob: g.billede.low || g.billede.full },
+        { name: 'places.json', blob: new Blob([json], { type: 'application/json' }) },
+        { name: 'LAES-MIG.txt', blob: new Blob([laesMig(g, base)], { type: 'text/plain;charset=utf-8' }) }
+      ];
+      download(await makeZip(filer), base + '-gennemgang.zip');
+      toast('Pakken er hentet. Læg filerne på din egen webadresse — index.html er forsiden.', 7500);
+    } catch (e) {
+      toast('Kunne ikke samle pakken: ' + e.message, 7000);
+    }
   }
 
   /* ---------- guidet rundtur ---------- */
@@ -1270,7 +1845,7 @@
   /** Bytter det lette forhåndsbillede ud med fuld opløsning — uden at kameraet rykker. */
   let upgrading = false;
   async function upgradeToFullRes() {
-    if (upgrading || !poster.src || poster.src.endsWith(DEFAULT_IMAGE)) return;
+    if (upgrading || !poster.src || erFuld(poster.src)) return;
     upgrading = true;
     // samme udsnit før og efter, så opløsningsskiftet er usynligt
     const c = unproject(focus.x, focus.y, view.zoom * img.fit);
@@ -1278,16 +1853,16 @@
     const prev = poster.src;
     const seq = imageSeq;
     try {
-      poster.src = DEFAULT_IMAGE;
+      poster.src = FULD;
       await poster.decode();          // billedet er klar til at blive vist
     } catch {
       // decode() afviser også, hvis nogen har skiftet billede imens — så rører vi intet.
-      if (seq === imageSeq && poster.src.endsWith(DEFAULT_IMAGE)) poster.src = prev;
+      if (seq === imageSeq && erFuld(poster.src)) poster.src = prev;
       upgrading = false;
       return;
     }
     // Er der valgt et andet billede imens, rører vi ikke visningen.
-    if (seq !== imageSeq || !poster.src.endsWith(DEFAULT_IMAGE)) { upgrading = false; return; }
+    if (seq !== imageSeq || !erFuld(poster.src)) { upgrading = false; return; }
     adoptImage();
     measure();
     const k = z * img.fit;
@@ -1525,7 +2100,10 @@
     $('prevBtn').addEventListener('click', () => step(-1));
     $('nextBtn').addEventListener('click', () => step(1));
     editToggle.addEventListener('click', () => {
+      if (state.lav) return slutLav();
       if (state.editing) return setEditing(false);
+      // Egne gennemgange kræver ingen nøgle — kun det fælles kort gør.
+      if (state.vis === 'egen') return begyndLav();
       if (!state.unlocked) return askKey();
       setEditing(true);
     });
@@ -1548,6 +2126,56 @@
     });
     $('discardBtn').addEventListener('click', discardLocal);
     $('lockBtn').addEventListener('click', lockEditing);
+
+    // kilde: det fælles kort eller en af ens egne gennemgange
+    kildeValg.addEventListener('click', (e) => { e.stopPropagation(); visKildeListe(); });
+    kildeNy.addEventListener('click', (e) => { e.stopPropagation(); skjulKildeListe(); åbnVælger(); });
+    document.addEventListener('click', (e) => {
+      if (kildeListe.hidden) return;
+      if (e.target instanceof Element && e.target.closest('#kilde')) return;
+      skjulKildeListe();
+    });
+
+    // tryllebinderen: fra billede til gennemgang
+    wizBag.addEventListener('click', lukVælger);
+    $('wizLuk').addEventListener('click', lukVælger);
+    wizDrop.addEventListener('click', () => wizFil.click());
+    wizDrop.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); wizFil.click(); }
+    });
+    wizDrop.addEventListener('dragover', (e) => { e.preventDefault(); wizDrop.classList.add('is-over'); });
+    wizDrop.addEventListener('dragleave', () => wizDrop.classList.remove('is-over'));
+    wizDrop.addEventListener('drop', (e) => {
+      e.preventDefault();
+      wizDrop.classList.remove('is-over');
+      const f = e.dataTransfer?.files?.[0];
+      if (f) vælgFil(f);
+    });
+    wizFil.addEventListener('change', () => {
+      const f = wizFil.files?.[0];
+      if (f) vælgFil(f);
+      wizFil.value = '';
+    });
+    $('wizKoer').addEventListener('click', afslutLav);
+    $('wizFil2').addEventListener('click', () => sendSomFil());
+    $('wizPakke').addEventListener('click', () => hentPakke());
+    wizNavn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); afslutLav(); }
+    });
+
+    // trin 2: sætte steder direkte på sin egen illustration
+    lavNyt.addEventListener('click', () => { state.armed ? disarm() : arm(); renderLav(); });
+    lavFortryd.addEventListener('click', afbrydLav);
+    lavVidere.addEventListener('click', () => {
+      disarm();
+      lavBar.hidden = true;
+      state.active = -1;
+      updateActiveRows();
+      renderDetail();
+      fitView();
+      wiz.hidden = false;
+      wizTrin(3);
+    });
 
     // rundturen
     $('tourStart').addEventListener('click', startTour);
@@ -1575,6 +2203,7 @@
 
     addEventListener('keydown', (e) => {
       if (e.target instanceof Element && e.target.matches('input, textarea')) return;
+      if (!wiz.hidden && e.key === 'Escape') { e.preventDefault(); return lukVælger(); }
       if (e.key === 't' || e.key === 'T') {
         tour.on ? stopTour(STOP_HINT) : startTour();
         return;
@@ -1633,24 +2262,48 @@
     try { state.unlocked = localStorage.getItem(UNLOCK_LS) === '1'; } catch { }
     const draft = state.unlocked ? loadDraft() : null;
 
-    // Den fælles fil er kilden. Kan den ikke læses, bruges standardstederne.
-    let shared = null;
-    try {
-      const fresh = await fetchShared();
-      state.shared = fresh.data;
-      state.sharedText = fresh.text;
-      shared = fresh.data;
-    } catch { /* ingen fil endnu */ }
+    // Hvilken illustration viser vi? En tilsendt fil vinder, derefter ens egen
+    // gennemgang, og ellers det fælles kort. Den fælles fil kan ikke læses?
+    // Så bruges standardstederne.
+    await læsEgenListe();
+    let egen = null;
+    const husket = husketEgen();
+    if (!IND && husket) {
+      egen = await læsEgen(husket);
+      if (!egen) huskEgen('');       // gennemgangen er slettet eller væk
+    }
 
-    if (draft) {
-      state.draft = true;
-      meta.navn = draft.navn;
-      state.places = copyPlaces(draft.places);
-    } else if (shared) {
-      meta.navn = shared.navn;
-      state.places = copyPlaces(shared.places);
+    let shared = null;
+    if (IND) {
+      state.vis = 'indbygget';
+      state.places = (Array.isArray(IND.places) ? IND.places : []).map(cleanPlace);
+      meta.navn = String(IND.navn || 'Gennemgang').slice(0, 60);
+      if (!state.places.length) state.places = DEFAULT_PLACES.map((p) => ({ ...p }));
+    } else if (egen) {
+      state.vis = 'egen';
+      state.egen = egen;
+      state.places = copyPlaces(egen.places.map(cleanPlace));
+      meta.navn = String(egen.navn || 'Min gennemgang').slice(0, 60);
     } else {
-      state.places = DEFAULT_PLACES.map((p) => ({ ...p }));
+      state.vis = 'faelles';
+      try {
+        const fresh = await fetchShared();
+        state.shared = fresh.data;
+        state.sharedText = fresh.text;
+        shared = fresh.data;
+      } catch { /* ingen fil endnu */ }
+
+      if (draft) {
+        state.draft = true;
+        meta.navn = draft.navn;
+        state.places = copyPlaces(draft.places);
+      } else if (shared) {
+        meta.navn = shared.navn;
+        state.places = copyPlaces(shared.places);
+      } else {
+        // (uden fil: standardstederne nedenfor)
+        state.places = DEFAULT_PLACES.map((p) => ({ ...p }));
+      }
     }
 
     // Den besøgendes egen rundtur huskes i denne browser. Steder der ikke
@@ -1659,34 +2312,54 @@
     const kunKendte = (liste) => (Array.isArray(liste) ? liste : [])
       .filter((n) => typeof n === 'string' && state.places.some((p) => p.navn === n));
     try {
-      const gemt = kunKendte(JSON.parse(localStorage.getItem(RUTE_LS) || '[]'));
-      const delt = hashRute();
+      // I en tilsendt fil følger afsenderens rute med i selve filen.
+      const fraFil = IND && Array.isArray(IND.rute) ? IND.rute : null;
+      const gemt = kunKendte(fraFil || JSON.parse(localStorage.getItem(RUTE_LS) || '[]'));
+      const delt = fraFil ? null : hashRute();
       const fraAdresse = delt ? kunKendte(delt) : null;
       // Et link uden brugbare navne må ikke slette ens egen rute.
       state.rute = delt && !fraAdresse.length ? gemt : (fraAdresse || gemt);
-      if (delt) fraLink = { antal: fraAdresse.length };
+      if (delt || fraFil) fraLink = { antal: (fraAdresse || gemt).length };
       if (state.rute.join("\u0000") !== gemt.join("\u0000")) gemRute();
     } catch { state.rute = []; }
 
-    document.title = `${meta.navn} — interaktivt kort`;
+    if (state.vis === 'faelles') fællesNavn = (state.shared?.navn || (draft ? draft.navn : DEFAULT_TITLE));
+    if (IND) document.documentElement.classList.add('is-indbygget');
+    document.title = `${meta.navn} — ${state.vis === 'faelles' ? 'interaktivt kort' : 'gennemgang'}`;
     $('title').textContent = meta.navn;
+    opdaterKildeStribe();
     renderMenu();
     renderDetail();
     renderBadge();
 
-    // Billedet: et lokalt uploadet par vinder over de udgivne filer.
-    const stored = await readImage();
-    if (stored?.full) {
-      state.imageDirty = true;
-      renderBadge();
-      try { await loadImageFrom(URL.createObjectURL(stored.full), true); }
-      catch { try { await loadImageFrom(LOW_IMAGE, false); } catch { } }
-    } else {
+    // Illustrationen: en tilsendt fil og ens egen gennemgang har billedet med
+    // sig; det fælles kort læser de udgivne filer — og et lokalt upload vinder.
+    if (state.vis === 'indbygget') {
+      const billede = IND.billede || {};
+      FULD = billede.full || DEFAULT_IMAGE;
       try {
-        await loadImageFrom(LOW_IMAGE, false);
-      } catch {
-        try { await loadImageFrom(DEFAULT_IMAGE, false); }
-        catch { toast('Kunne ikke hente illustrationen. Brug "Byt illustration" for at vælge en fil.'); }
+        await loadImageFrom(billede.low || FULD, false);
+        if (billede.low) upgradeToFullRes();
+      } catch { toast('Kunne ikke vise illustrationen i filen.'); }
+    } else if (state.vis === 'egen' && state.egen?.billede?.full) {
+      FULD = URL.createObjectURL(state.egen.billede.full);
+      try { await loadImageFrom(FULD, true); }
+      catch { toast('Kunne ikke vise illustrationen til din gennemgang.'); }
+    } else {
+      const stored = await readImage();
+      if (stored?.full) {
+        state.imageDirty = true;
+        renderBadge();
+        try { await loadImageFrom(URL.createObjectURL(stored.full), true); }
+        catch { try { await loadImageFrom(LOW_IMAGE, false); } catch { } }
+      } else {
+        try {
+          await loadImageFrom(LOW_IMAGE, false);
+        } catch {
+          try { await loadImageFrom(DEFAULT_IMAGE, false); }
+          catch { toast('Kunne ikke hente illustrationen. Brug "Byt illustration" for at vælge en fil.'); }
+        }
+        upgradeToFullRes();
       }
     }
 
@@ -1696,7 +2369,6 @@
     paintMini();
     bindStage();
     bindUi();
-    if (!stored?.full) upgradeToFullRes();
 
     // En delt rute åbner sig selv. Først ryddes adressen, så et genindlæsning
     // bagefter bruger den rute, der nu er ens egen — og så sætter turen i gang,
@@ -1706,9 +2378,12 @@
       // Kun hvis linket faktisk indeholdt steder, sætter turen i gang. Ellers
       // må ens egen rute ikke begynde at spille på et link, der ikke virker.
       if (fraLink.antal) {
+        const fraFil = state.vis === 'indbygget';
         setTimeout(() => {
           startTour();
-          toast(`Ruten fra linket kører nu · ${stedTal(fraLink.antal)} · ${hvorLænge(ruteSekunder())}`, 7000);
+          toast(fraFil
+            ? `Rundturen kører · ${stedTal(fraLink.antal)} · ${hvorLænge(ruteSekunder())}`
+            : `Ruten fra linket kører nu · ${stedTal(fraLink.antal)} · ${hvorLænge(ruteSekunder())}`, 7000);
         }, 1400);
       } else {
         toast('Der var ingen steder i linket, som findes på kortet længere.', 5600);

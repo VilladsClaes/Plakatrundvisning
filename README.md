@@ -11,6 +11,10 @@ uden at nogen skal genindlæse.
 Brugbart til tekniske tegninger, kunstværker, oversigtskort, festivalplakater og
 alt andet hvor man vil "dykke ned" i et stort billede.
 
+Og til dit **eget** billede: enhver besøgende kan uploade sin egen illustration,
+sætte sine egne steder og sende gennemgangen videre som én selvstændig fil. Se
+[Lav en gennemgang af din egen illustration](#lav-en-gennemgang-af-din-egen-illustration).
+
 ## Kør det
 
 Siden skal serveres over HTTP (så `fetch`, `localStorage` og `IndexedDB` virker):
@@ -29,7 +33,10 @@ Pages, en mappe på et webhotel …). Der er ingen build og ingen afhængigheder
 | --- | --- |
 | **Guidet rundtur** | **Se rundturen** nederst i panelet, eller tryk `t` |
 | Din egen rundtur | Sæt hak i listen (eller `v`), tryk **▶ Se din rundtur** |
-| Dele sin rundtur | **Del** i rute-linjen → et link med ruten ligger i udklipsholderen |
+| Dele sin rundtur | **Del** i rute-linjen → et link med ruten ligger i udklipsholderen (kun det fælles kort) |
+| Egen illustration | **＋ Ny** øverst i panelet → vælg en fil, eller start fra et eksempel |
+| Rette sin gennemgang | **Redigér steder** → klik for at flytte, træk i prikkerne, skriv i listen |
+| Sende sin gennemgang | **Redigér steder** → **Videre** → **Send som fil** eller **Hent pakke** |
 | Pause undervejs | `mellemrum`, eller knappen **Pause** |
 | Se et sted | Klik på et menupunkt, på en prik eller tryk `1`–`9` |
 | Næste/forrige | `↑`/`↓` eller knapperne i detaljefeltet |
@@ -89,6 +96,40 @@ den rækkefølge de valgte dem:
 Er der ingen hak, er knappen den samme som før: hele rundturen gennem alle steder.
 Sætter man hak undervejs i en tur, holder turen op som ved ethvert andet indgreb —
 og det nye valg gælder næste tur.
+
+## Din egen illustration
+
+Siden kan bruges til meget andet end én plakat: et landkort, en forlystelsespark,
+en teknisk tegning eller et kunstværk. Enhver kan lave sin egen gennemgang af
+den grafik, de har — uden nøgle og uden at noget forlader browseren.
+
+**Sådan gør man**
+
+1. **＋ Ny** øverst i panelet. Træk et billede ind, vælg en fil (JPG, PNG, WebP
+   eller SVG) — eller start fra et af de to indbyggede eksempler,
+   *Forlystelsesparken* og *Teknisk tegning*, som allerede har steder sat.
+2. **Sæt steder.** Klik på illustrationen, hvor et sted ligger. Navn og fortælling
+   skriver man i listen til venstre, og prikken kan trækkes på plads bagefter.
+   Kortet zoomer, panorerer og kører som altid.
+3. **Del.** Giv gennemgangen et navn, og vælg mellem:
+   - **▶ Kør gennemgangen** — turen kører med det samme.
+   - **Send som fil** — én selvstændig `.html`-fil med billedet indbygget. Den
+     kan sendes som den er og åbnes i en browser uden server og uden netadgang.
+   - **Hent pakke** — en zip med `index.html`, billedfilerne, `places.json` og en
+     `LAES-MIG.txt`, klar til at lægge på et webhotel, GitHub Pages eller Netlify.
+
+Billedet kodes til to WebP-størrelser (2600 og 1500 px bredt) og gemmes sammen
+med stederne i browserens eget lager. Gennemgangen dukker op i **Skift**-menuen
+øverst i panelet, hvor man også skifter tilbage til det fælles kort og sletter
+igen. Har man flere, står de øverst dem, man sidst har rettet i.
+
+To ting er værd at vide:
+
+- **Kun i denne browser.** En gennemgang ligger lokalt, indtil man selv sender
+  filen eller pakken videre. Der bliver intet sendt op på en server.
+- **Del-knappen i rute-linjen hører til det fælles kort.** Et link med en rute
+  virker kun, hvor stederne findes; på egne gennemgange er delingen filen eller
+  pakken i stedet.
 
 ## Den fælles kilde
 
@@ -185,8 +226,10 @@ uudgivet i projektet, siger den til frem for at tage det med.
 ```
 index.html                   struktur
 assets/app.css               design, animationer, responsivt layout
-assets/app.js                kamera, zoom, markører, tråd, redigering, zip, fillæsning
+assets/app.js                kamera, zoom, markører, tråd, redigering, egne gennemgange, zip
 tools/publish.mjs            fra kladde til live i ét skridt
+examples/forlystelsespark.svg  indbygget eksempel — oversigtskort
+examples/teknisk-tegning.svg   indbygget eksempel — teknisk snit
 places.json                  den fælles kilde — stederne
 plakat-low.webp              1500 px — vises med det samme
 plakat-web.webp              4600 px — byttes ind i baggrunden (samme udsnit)
@@ -204,6 +247,10 @@ zoom samtidig.
 - `POLL_MS` — hvor tit der lyttes efter ændringer (15 s)
 - `EDIT_KEY` — nøglen til redigeringstilstanden
 - `RUTE_LS` — nøglen hvor den besøgendes egen rute huskes i browseren
+- `EGEN_LS` — nøglen hvor den gennemgang, man sidst har åbnet, huskes
+- `EGEN_LISTE` / `EGEN_NOEGLE(id)` — hvor egne gennemgange gemmes i IndexedDB
+- `EGEN_FULD` / `EGEN_LET` — bredden på de to WebP-filer, et upload kodes til
+- `PRØVER` — de indbyggede eksempler med deres steder
 - `DEFAULT_PLACES` — standardstederne, hvis filen mangler
 - `DEFAULT_IMAGE` / `LOW_IMAGE` — illustrationerne
 - `FULL_SIDE` / `LOW_SIDE` — bredden på de to udgivne billedfiler
