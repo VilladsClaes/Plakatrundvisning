@@ -124,6 +124,7 @@
   let vw = 0, vh = 0, visL = 0, visR = 0, visT = 0, visB = 0;
   let stopTween = null;
   let miniReady = false;
+  let fraLink = null;       // en delt rute fra adressen (#rute=…), som skal åbne sig selv
 
   /* ---------- småting ---------- */
   /** Filnavn uden danske tegn og dobbelte bindestreger. */
@@ -849,6 +850,60 @@
     if (tourMeta) tourMeta.textContent = tourSummary();
   }
 
+  /* ---------- del ruten med et link ---------- */
+
+  /** Ruten som et stykke adresse: navnene procent-kodes, så kommaer i navne ikke kan forvirre. */
+  function ruteHash(navne) {
+    return navne.map((n) => encodeURIComponent(n)).join(',');
+  }
+
+  /** Læser en delt rute ud af adressen. Returnerer null, hvis der ikke er nogen. */
+  function hashRute() {
+    const h = location.hash.replace(/^#/, '');
+    if (!h.startsWith('rute=')) return null;
+    try {
+      return h.slice(5).split(',').map((s) => decodeURIComponent(s)).filter(Boolean);
+    } catch { return null; }
+  }
+
+  /** Adressen der åbner netop den rute, der er hakket af nu. */
+  function ruteAdresse() {
+    const base = location.origin + location.pathname + location.search;
+    return `${base}#rute=${ruteHash(ruteNavne())}`;
+  }
+
+  /** Lægger teksten i udklipsholderen — med den gamle vej som bagstopper. */
+  async function kopiér(tekst) {
+    try {
+      await navigator.clipboard.writeText(tekst);
+      return true;
+    } catch { /* udklipsholderen kan være spærret, fx uden https */ }
+    try {
+      const felt = document.createElement('textarea');
+      felt.value = tekst;
+      felt.setAttribute('readonly', '');
+      felt.style.position = 'fixed';
+      felt.style.top = '-1000px';
+      document.body.appendChild(felt);
+      felt.select();
+      const ok = document.execCommand('copy');
+      felt.remove();
+      return ok;
+    } catch { return false; }
+  }
+
+  async function delRute() {
+    const navne = ruteNavne();
+    if (!navne.length) return;
+    const adresse = ruteAdresse();
+    if (await kopiér(adresse)) {
+      toast(`Linket er kopieret — send det til dem, du vil vise ruten til. ${stedTal(navne.length)} · ${hvorLænge(ruteSekunder())}`, 5600);
+      return;
+    }
+    // Kunne vi ikke lægge det i udklipsholderen, får man det at se, så det kan markeres selv.
+    prompt('Kopiér linket til din rundtur:', adresse);
+  }
+
   /* ---------- guidet rundtur ---------- */
   /** Hvor længe der hviler på et sted. Længere fortællinger får mere tid. */
   function dwellFor(p) {
@@ -1501,6 +1556,7 @@
 
     // den personlige rute
     $('ruteStart').addEventListener('click', startTour);
+    $('ruteDel').addEventListener('click', delRute);
     $('ruteAlle').addEventListener('click', () => sætRute(state.places.map((p) => p.navn)));
     $('ruteRyd').addEventListener('click', () => sætRute([]));
 
@@ -1598,12 +1654,18 @@
     }
 
     // Den besøgendes egen rundtur huskes i denne browser. Steder der ikke
-    // længere findes i filen, ryger ud med det samme.
+    // længere findes i filen, ryger ud med det samme. En delt rute i adressen
+    // (#rute=…) vinder over den gemte, og bliver ens egen her i browseren.
+    const kunKendte = (liste) => (Array.isArray(liste) ? liste : [])
+      .filter((n) => typeof n === 'string' && state.places.some((p) => p.navn === n));
     try {
-      const gemt = JSON.parse(localStorage.getItem(RUTE_LS) || '[]');
-      const navne = Array.isArray(gemt) ? gemt.filter((n) => typeof n === 'string') : [];
-      state.rute = navne.filter((n) => state.places.some((p) => p.navn === n));
-      if (state.rute.length !== navne.length) gemRute();
+      const gemt = kunKendte(JSON.parse(localStorage.getItem(RUTE_LS) || '[]'));
+      const delt = hashRute();
+      const fraAdresse = delt ? kunKendte(delt) : null;
+      // Et link uden brugbare navne må ikke slette ens egen rute.
+      state.rute = delt && !fraAdresse.length ? gemt : (fraAdresse || gemt);
+      if (delt) fraLink = { antal: fraAdresse.length };
+      if (state.rute.join("\u0000") !== gemt.join("\u0000")) gemRute();
     } catch { state.rute = []; }
 
     document.title = `${meta.navn} — interaktivt kort`;
@@ -1635,6 +1697,23 @@
     bindStage();
     bindUi();
     if (!stored?.full) upgradeToFullRes();
+
+    // En delt rute åbner sig selv. Først ryddes adressen, så et genindlæsning
+    // bagefter bruger den rute, der nu er ens egen — og så sætter turen i gang,
+    // når indgangsanimationen har lagt sig.
+    if (fraLink) {
+      try { history.replaceState(null, '', location.pathname + location.search); } catch { }
+      // Kun hvis linket faktisk indeholdt steder, sætter turen i gang. Ellers
+      // må ens egen rute ikke begynde at spille på et link, der ikke virker.
+      if (fraLink.antal) {
+        setTimeout(() => {
+          startTour();
+          toast(`Ruten fra linket kører nu · ${stedTal(fraLink.antal)} · ${hvorLænge(ruteSekunder())}`, 7000);
+        }, 1400);
+      } else {
+        toast('Der var ingen steder i linket, som findes på kortet længere.', 5600);
+      }
+    }
 
     frame(() => {
       app.classList.add('is-ready', 'is-anim');

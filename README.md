@@ -29,6 +29,7 @@ Pages, en mappe på et webhotel …). Der er ingen build og ingen afhængigheder
 | --- | --- |
 | **Guidet rundtur** | **Se rundturen** nederst i panelet, eller tryk `t` |
 | Din egen rundtur | Sæt hak i listen (eller `v`), tryk **▶ Se din rundtur** |
+| Dele sin rundtur | **Del** i rute-linjen → et link med ruten ligger i udklipsholderen |
 | Pause undervejs | `mellemrum`, eller knappen **Pause** |
 | Se et sted | Klik på et menupunkt, på en prik eller tryk `1`–`9` |
 | Næste/forrige | `↑`/`↓` eller knapperne i detaljefeltet |
@@ -73,11 +74,17 @@ den rækkefølge de valgte dem:
   Tallet i kassen viser pladsen i rækkefølgen — 1 er det første, der bliver vist.
   Prikken ude på illustrationen får en ring, så man kan se sin rute på kortet.
 - **Linjen over detaljerne** viser hvor mange steder der er valgt og hvor lang tid
-  turen tager, med **▶ Se din rundtur**, **Alle** og **Ryd**.
+  turen tager, med **▶ Se din rundtur**, **Del**, **Alle** og **Ryd**.
 - **I sin egen rækkefølge:** turen følger den rækkefølge, der blev sat hak i —
   ikke rækkefølgen i listen. Fjerner man et hak, rykker de andre op.
-- **Kun i din browser:** ruten huskes i `localStorage` og deles ikke med andre
-  besøgende. Den fælles fil er stadig kun stederne.
+- **Dele ruten:** **Del** lægger et link i udklipsholderen — fx
+  `…/#rute=Tr%C3%A6platformen,H%C3%B8nseg%C3%A5rden` — med ens egne steder i ens
+  egen rækkefølge. Åbner nogen linket, bliver ruten deres, og turen sætter selv i
+  gang. Adressen ryddes bagefter, så et genindlæsning ikke begynder forfra.
+  Sender man et link til steder, der er fjernet fra filen, falder de bare væk.
+- **Ellers kun i din browser:** ruten huskes i `localStorage` og lægges ikke op
+  nogen steder. Den fælles fil er stadig kun stederne — uden et link ser andre
+  besøgende ikke ens rute.
 
 Er der ingen hak, er knappen den samme som før: hele rundturen gennem alle steder.
 Sætter man hak undervejs i en tur, holder turen op som ved ethvert andet indgreb —
