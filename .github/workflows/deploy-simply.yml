@@ -25,10 +25,12 @@ jobs:
       - name: Deploy website
         uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65
         with:
-          server: ftp.villadsclaes.dk
+          # Simplys FTP-host er ftp.simply.com — ikke webhotellets eget domæne.
+          server: ftp.simply.com
+          port: 21
           username: ${{ secrets.SIMPLY_FTP_USERNAME }}
           password: ${{ secrets.SIMPLY_FTP_PASSWORD }}
-          protocol: ftps
+          protocol: ftps # eksplicit TLS på port 21, som Simply anbefaler
           security: strict
           server-dir: /interaktivtkort/
           exclude: |

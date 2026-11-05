@@ -297,8 +297,13 @@ når der pushes til `main`. Kortet ligger på
 
 Simply-deploy kræver, at repository-secrets `SIMPLY_FTP_USERNAME` og
 `SIMPLY_FTP_PASSWORD` er oprettet under GitHub → Settings → Secrets and variables →
-Actions. Underdomænet `interaktivkort.villadsclaes.dk` skal være oprettet i Simplys
-kontrolpanel og pege på `/interaktivtkort/`.
+Actions. Brugernavnet er webhotellets domæne (`villadsclaes.dk`), og forbindelsen går til
+`ftp.simply.com` på port 21 med eksplicit FTPS.
+
+Underdomænet `interaktivtkort.villadsclaes.dk` skal være oprettet i Simplys kontrolpanel
+under **Website → Subdomæner** og pege på mappen `interaktivtkort` ved siden af
+`public_html` — det er Simplys standardmappe for et nyt underdomæne, og den kan ikke
+ændres bagefter. Workflowen lægger filerne i `/interaktivtkort/`.
 
 | | |
 | --- | --- |
