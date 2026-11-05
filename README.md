@@ -196,9 +196,15 @@ node tools/publish.mjs
 ```
 
 Kommandoen finder selv den nyeste `*-kort.zip` i din Downloads-mappe, kontrollerer
-pakken, lægger filerne på plads og udgiver kortet med et commit og et push — hvorefter
-GitHub Pages viser det nye kort. Kortet ligger på
+pakken, lægger filerne på plads og udgiver kortet med et commit og et push. GitHub Pages
+viser det nye kort, og GitHub Actions udgiver projektets statiske filer til Simply.com,
+når der pushes til `main`. Kortet ligger på
 <https://villadsclaes.github.io/Plakatrundvisning/>.
+
+Simply-deploy kræver, at repository-secrets `SIMPLY_FTP_USERNAME` og
+`SIMPLY_FTP_PASSWORD` er oprettet under GitHub → Settings → Secrets and variables →
+Actions. Underdomænet `interaktivkort.villadsclaes.dk` skal være oprettet i Simplys
+kontrolpanel og pege på `/interaktivtkort/`.
 
 | | |
 | --- | --- |

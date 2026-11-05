@@ -1,0 +1,42 @@
+name: Deploy to Simply.com
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: simply-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy static site over FTPS
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Deploy website
+        uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65
+        with:
+          server: ftp.villadsclaes.dk
+          username: ${{ secrets.SIMPLY_FTP_USERNAME }}
+          password: ${{ secrets.SIMPLY_FTP_PASSWORD }}
+          protocol: ftps
+          security: strict
+          server-dir: /interaktivtkort/
+          exclude: |
+            **/.git*
+            **/.github/**
+            **/.work/**
+            **/.freebuff/**
+            **/tools/**
+            **/README.md
+            **/.gitignore
+            **/.gitattributes
