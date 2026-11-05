@@ -32,7 +32,8 @@ jobs:
           password: ${{ secrets.SIMPLY_FTP_PASSWORD }}
           protocol: ftps # eksplicit TLS på port 21, som Simply anbefaler
           security: strict
-          server-dir: /interaktivtkort/
+          # Simply serverer webhotellets indhold fra public_html i FTP-roden.
+          server-dir: /public_html/
           exclude: |
             **/.git*
             **/.github/**
