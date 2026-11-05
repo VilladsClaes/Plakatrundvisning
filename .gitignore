@@ -2,6 +2,14 @@
 .work/
 .freebuff/
 
+# Afhængigheder
+node_modules/
+
+# Lokale hemmeligheder — kun .env.example hører med i git
+.env
+.env.local
+.env.*.local
+
 # Originalerne (11522 × 8138). Siden bruger de to webp-filer; disse ligger kun lokalt.
 plakat.png
 plakat.jpg

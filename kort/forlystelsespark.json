@@ -1,0 +1,55 @@
+{
+  "navn": "Forlystelsesparken",
+  "udgave": 1,
+  "places": [
+    {
+      "navn": "Indgangen",
+      "tekst": "Billetten klippes under buen, og så er man inde. Herfra kan man tage runden i sin egen rækkefølge.",
+      "x": 0.25,
+      "y": 0.895,
+      "zoom": 3
+    },
+    {
+      "navn": "Madmarkedet",
+      "tekst": "Tre boder med stribede sejl: vafler, is og noget at drikke. Borde og bænke står lige bagved.",
+      "x": 0.488,
+      "y": 0.582,
+      "zoom": 3.1
+    },
+    {
+      "navn": "Søen",
+      "tekst": "Vandet midt i parken med robåde og en lille bro. Om aftenen spejler lamperne sig i overfladen.",
+      "x": 0.7,
+      "y": 0.469,
+      "zoom": 3
+    },
+    {
+      "navn": "Pariserhjulet",
+      "tekst": "Hjulet løfter en op over træerne, og herfra kan man se hele parken og landskabet bagved.",
+      "x": 0.8125,
+      "y": 0.259,
+      "zoom": 3
+    },
+    {
+      "navn": "Karrusellen",
+      "tekst": "Det stribede tag drejer langsomt rundt, og hestene er malet i alle farver. Den kører lige så stille, at de mindste kan være med.",
+      "x": 0.6,
+      "y": 0.193,
+      "zoom": 3.2
+    },
+    {
+      "navn": "Rutschebanen",
+      "tekst": "Turen starter i den røde station, tager bakken med hvinende hjul og drejer en enkelt tur i luften.",
+      "x": 0.166,
+      "y": 0.605,
+      "zoom": 3
+    },
+    {
+      "navn": "Scenen",
+      "tekst": "Musikken spiller fra den gule skal om eftermiddagen, og der er plads til at danse foran.",
+      "x": 0.4,
+      "y": 0.273,
+      "zoom": 3.2
+    }
+  ]
+}

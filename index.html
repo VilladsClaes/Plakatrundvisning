@@ -157,6 +157,22 @@
     </form>
   </div>
 
+  <!-- Vælgeren: flere kort på samme site (index.json) -->
+  <div class="samling" id="samling" hidden>
+    <div class="samling__bag" id="samlingBag"></div>
+    <div class="samling__kort" role="dialog" aria-modal="true" aria-labelledby="samlingTitel">
+      <header class="samling__top">
+        <div>
+          <p class="samling__kicker">Kortene</p>
+          <h2 class="samling__titel" id="samlingTitel">Vælg et kort</h2>
+        </div>
+        <button class="samling__luk" id="samlingLuk" type="button" aria-label="Luk">✕</button>
+      </header>
+      <p class="samling__tekst">Flere gennemgange på samme side. Vælg den, du vil se — valget huskes i denne browser, og du kan skifte igen med <b>Skift</b> øverst i panelet.</p>
+      <div class="kortvalg-liste" id="samlingListe"></div>
+    </div>
+  </div>
+
   <!-- Lav sin egen gennemgang -->
   <div class="wiz" id="wiz" hidden>
     <div class="wiz__bag" id="wizBag"></div>
@@ -184,6 +200,17 @@
           <span class="drop__typer">JPG · PNG · WebP · SVG</span>
         </div>
         <p class="wiz__note">Landkort, oversigtskort, teknisk tegning, kunstværk, festivalplakat — hvad som helst med noget at fortælle. Billedet bliver i din browser.</p>
+
+        <p class="wiz__eller"><span>eller indsæt en adresse</span></p>
+        <form class="url" id="urlForm">
+          <label class="felt">
+            <span class="felt__navn">Billede på nettet</span>
+            <input type="url" id="urlInput" placeholder="https://…/kort.jpg" autocomplete="off" spellcheck="false" inputmode="url" aria-label="Adresse til et billede">
+          </label>
+          <button class="pill" id="urlHent" type="submit">Hent billedet</button>
+        </form>
+        <p class="wiz__note" id="urlNote">Kan billedet hentes, bliver gennemgangen selvstændig som et upload. Kan serveren ikke dele det, vises billedet fra adressen — så virker filen og pakken kun, så længe adressen gør.</p>
+
         <p class="wiz__eller"><span>eller start fra et eksempel</span></p>
         <div class="proever" id="wizProever"></div>
       </div>
@@ -194,10 +221,12 @@
           <input type="text" id="wizNavn" maxlength="60" placeholder="Fx Forlystelsesparken"></label>
         <div class="wiz__knapper">
           <button class="pill pill--accent" id="wizKoer" type="button">▶ Kør gennemgangen</button>
+          <button class="pill" id="wizLink" type="button" hidden>Del som link</button>
           <button class="pill" id="wizFil2" type="button">Send som fil</button>
           <button class="pill" id="wizPakke" type="button">Hent pakke</button>
         </div>
-        <p class="wiz__note"><b>Fil</b> er én side, du kan sende eller lægge på nettet. <b>Pakke</b> er en zip til at hoste selv.</p>
+        <p class="wiz__note"><b>Link</b> er det letteste at sende, når billedet har en adresse — modtageren ser gennemgangen uden at hente noget. <b>Fil</b> er én side, du kan sende eller lægge på nettet. <b>Pakke</b> er en zip til at hoste selv.</p>
+        <p class="wiz__note" id="wizLinkNote" hidden><b>Link</b> kan ikke bruges her, fordi billedet kun ligger i denne browser. Brug <b>Fil</b> eller <b>Pakke</b> — de har billedet med.</p>
       </div>
     </div>
   </div>
@@ -212,7 +241,7 @@
     <button class="pill pill--accent" id="lavVidere" type="button">Videre</button>
   </div>
 
-  <p class="hint" id="hint">Træk for at panorere · rul for at zoome</p>
+  <p class="hint" id="hint">Træk for at panorere · rul for at zoome · dobbeltklik for at komme tæt på</p>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <input type="file" id="imageInput" accept="image/*" hidden>

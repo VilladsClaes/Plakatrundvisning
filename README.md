@@ -33,15 +33,17 @@ Pages, en mappe på et webhotel …). Der er ingen build og ingen afhængigheder
 | --- | --- |
 | **Guidet rundtur** | **Se rundturen** nederst i panelet, eller tryk `t` |
 | Din egen rundtur | Sæt hak i listen (eller `v`), tryk **▶ Se din rundtur** |
-| Dele sin rundtur | **Del** i rute-linjen → et link med ruten ligger i udklipsholderen (kun det fælles kort) |
-| Egen illustration | **＋ Ny** øverst i panelet → vælg en fil, eller start fra et eksempel |
+| Dele sin rundtur | **Del** i rute-linjen → et link i udklipsholderen (ruten på det fælles kort, hele gennemgangen på en egen) |
+| Egen illustration | **＋ Ny** øverst i panelet → vælg en fil, indsæt en billedadresse, eller start fra et eksempel |
 | Rette sin gennemgang | **Redigér steder** → klik for at flytte, træk i prikkerne, skriv i listen |
-| Sende sin gennemgang | **Redigér steder** → **Videre** → **Send som fil** eller **Hent pakke** |
+| Flytte et sted i rækkefølgen | Træk i `⠿` til venstre i listen (eller fokusér den og brug `↑`/`↓`) |
+| Sende sin gennemgang | **Redigér steder** → **Videre** → **Del som link**, **Send som fil** eller **Hent pakke** |
 | Pause undervejs | `mellemrum`, eller knappen **Pause** |
 | Se et sted | Klik på et menupunkt, på en prik eller tryk `1`–`9` |
 | Næste/forrige | `↑`/`↓` eller knapperne i detaljefeltet |
-| Panorer / zoom | Træk i billedet · rul / knib |
+| Panorer / zoom | Træk i billedet · rul / knib · dobbeltklik for at komme tæt på |
 | Se det hele | `⤢` eller `0` |
+| Skifte kort | **Skift** øverst i panelet → **Skift kort** (når der er en samling) |
 | Redigere | Knappen **Redigér steder** → skriv redigeringsnøglen |
 | Nyt sted | **＋ Nyt sted** → klik på illustrationen, hvor det ligger |
 | Flytte et sted | Træk i prikken (kun i redigeringstilstand) |
@@ -49,6 +51,19 @@ Pages, en mappe på et webhotel …). Der er ingen build og ingen afhængigheder
 | Udgive | **Hent kortet** → en zip med `places.json` og billedfilerne |
 | Fortryde alt lokalt | **Kassér** → viser den udgivne fil igen |
 | Låse igen | **Lås** |
+
+## At komme tæt på
+
+Zoom-grænsen følger illustrationens opløsning i stedet for at være fast: en
+stor scanning, et landkort eller en teknisk tegning kan forstørres til omkring
+tre gange billedets egne pixels, før det bliver udtværet. En lille tegning
+stopper tidligere, fordi der ikke er flere detaljer at hente.
+
+- **Dobbeltklik** zoomer ind hvor man peger (×2,2), og `shift`+dobbeltklik
+  zoomer ud igen. Det er den hurtige vej ind i en detalje.
+- **`+`/`−`** og knapperne virker som før, og `⤢` eller `0` viser det hele.
+- **Prikker og tråd** beholder deres størrelse, uanset hvor langt ind man er —
+  så et sted kan stadig ses og rammes, når tegningen fylder skærmen.
 
 ## Den guidede rundtur
 
@@ -84,6 +99,9 @@ den rækkefølge de valgte dem:
   turen tager, med **▶ Se din rundtur**, **Del**, **Alle** og **Ryd**.
 - **I sin egen rækkefølge:** turen følger den rækkefølge, der blev sat hak i —
   ikke rækkefølgen i listen. Fjerner man et hak, rykker de andre op.
+- **Rækkefølgen i listen** er den, hele rundturen følger. Man kan flytte et sted
+  ved at trække i `⠿` til venstre for hakkekassen — rækkerne giver plads undervejs,
+  og numrene på prikkerne følger med.
 - **Dele ruten:** **Del** lægger et link i udklipsholderen — fx
   `…/#rute=Tr%C3%A6platformen,H%C3%B8nseg%C3%A5rden` — med ens egne steder i ens
   egen rækkefølge. Åbner nogen linket, bliver ruten deres, og turen sætter selv i
@@ -105,31 +123,56 @@ den grafik, de har — uden nøgle og uden at noget forlader browseren.
 
 **Sådan gør man**
 
-1. **＋ Ny** øverst i panelet. Træk et billede ind, vælg en fil (JPG, PNG, WebP
-   eller SVG) — eller start fra et af de to indbyggede eksempler,
-   *Forlystelsesparken* og *Teknisk tegning*, som allerede har steder sat.
+1. **＋ Ny** øverst i panelet. Der er tre veje til grafikken:
+   - **Træk et billede ind** eller vælg en fil — JPG, PNG, WebP eller SVG.
+   - **Indsæt en adresse** til et billede, der allerede ligger på nettet.
+   - **Start fra et eksempel** — *Forlystelsesparken* eller *Teknisk tegning*,
+     som allerede har steder sat.
 2. **Sæt steder.** Klik på illustrationen, hvor et sted ligger. Navn og fortælling
    skriver man i listen til venstre, og prikken kan trækkes på plads bagefter.
    Kortet zoomer, panorerer og kører som altid.
 3. **Del.** Giv gennemgangen et navn, og vælg mellem:
    - **▶ Kør gennemgangen** — turen kører med det samme.
+   - **Del som link** — et link, der åbner hele gennemgangen hos modtageren:
+     stederne, navnet og billedets adresse ligger i selve adressen (komprimeret,
+     typisk under 1.000 tegn for en håndfuld steder). Det er den nemmeste vej,
+     når billedet allerede ligger på nettet.
    - **Send som fil** — én selvstændig `.html`-fil med billedet indbygget. Den
      kan sendes som den er og åbnes i en browser uden server og uden netadgang.
    - **Hent pakke** — en zip med `index.html`, billedfilerne, `places.json` og en
      `LAES-MIG.txt`, klar til at lægge på et webhotel, GitHub Pages eller Netlify.
+
+   Kom billedet fra en adresse, som serveren ikke ville dele, kan det ikke
+   pakkes ind: filen og pakken peger da på adressen i stedet og virker, så
+   længe den gør. Beskeden på skærmen siger, hvad der skete.
+
+   **Linket kræver, at billedet har en adresse.** Er illustrationen uploadet fra
+   ens egen maskine, ligger den kun i browseren — så viser knappen ikke, og
+   beskeden siger hvorfor. Filen og pakken har billedet med og er vejen der. Har
+   billedet en adresse, kan linket til gengæld deles videre af modtageren, og det
+   virker også, selv om billedet blev hentet ind ved oprettelsen.
 
 Billedet kodes til to WebP-størrelser (2600 og 1500 px bredt) og gemmes sammen
 med stederne i browserens eget lager. Gennemgangen dukker op i **Skift**-menuen
 øverst i panelet, hvor man også skifter tilbage til det fælles kort og sletter
 igen. Har man flere, står de øverst dem, man sidst har rettet i.
 
-To ting er værd at vide:
+Fire ting er værd at vide:
 
 - **Kun i denne browser.** En gennemgang ligger lokalt, indtil man selv sender
   filen eller pakken videre. Der bliver intet sendt op på en server.
-- **Del-knappen i rute-linjen hører til det fælles kort.** Et link med en rute
-  virker kun, hvor stederne findes; på egne gennemgange er delingen filen eller
-  pakken i stedet.
+- **Et link med en rute hører til det fælles kort.** Det virker kun, hvor
+  stederne findes. På en egen gennemgang deler den samme knap hele gennemgangen
+  — men kun når billedet har en adresse; ellers er filen eller pakken vejen.
+- **En modtaget gennemgang bliver ens egen.** Åbner man et link, lægges
+  gennemgangen i browserens lager og står under **Skift**, så man kan gå tilbage
+  til den senere, rette i den og dele den videre. Adressen ryddes bagefter, så et
+  genindlæsning ikke importerer den igen.
+- **En adresse kan give to slags gennemgange.** Deler serveren billedet, bliver
+  det hentet ind og kodes som et upload — så er gennemgangen selvstændig. Gør
+  den ikke (mange servere sender ikke CORS-hoveder), vises billedet fra
+  adressen, og filen og pakken peger så på den i stedet: de virker, så længe
+  adressen gør. Beskeden på skærmen siger, hvad der skete.
 
 ## Den fælles kilde
 
@@ -156,6 +199,57 @@ det samme — kameraet bliver hvor det er, og det sted du kigger på, følges ad
 Kan filen ikke læses, falder siden tilbage til `DEFAULT_PLACES` i
 [assets/app.js](assets/app.js). Filen er altså kilden, og standardstederne er
 nødløsningen og frøet til den første udgivelse.
+
+## Flere kort på samme site
+
+Alt ovenfor er ét kort. Skal samme side vise flere — en plakat, et
+oversigtskort, en teknisk tegning — lægger man en `index.json` ved siden af
+`places.json`:
+
+```json
+{
+  "udgave": 1,
+  "kort": [
+    { "id": "skarresoe", "navn": "Skarresø", "om": "Landsbyen ved søen",
+      "fil": "places.json", "billede": "plakat-web.webp", "lav": "plakat-low.webp" },
+    { "id": "forlystelsespark", "navn": "Forlystelsesparken",
+      "om": "Oversigtskort", "fil": "kort/forlystelsespark.json",
+      "billede": "examples/forlystelsespark.svg" }
+  ]
+}
+```
+
+| felt | |
+| --- | --- |
+| `id` | kort og unikt — bruges i links og huskes i browseren |
+| `navn` | det, der står i vælgeren |
+| `om` | én linje mere, valgfri |
+| `fil` | stederne, i samme format som `places.json` |
+| `billede` | illustrationen (JPG, PNG, WebP eller SVG) |
+| `lav` | et let forhåndsbillede, valgfrit — bruges hvis det findes |
+
+**Sådan opfører siden sig**
+
+- Ved første besøg åbner **vælgeren** med et billede af hvert kort, når der er
+  mere end ét. Valget huskes i denne browser, og næste gang går siden direkte
+  til det valgte kort.
+- Undervejs skifter man med **Skift** øverst i panelet → **Skift kort**.
+  Vælgeren lukkes også med `Escape`.
+- **Links husker kortet.** Deler man en rute fra et andet kort end det første,
+  står kortet i linket (`…/#kort=teknisk-tegning&rute=Skorstenen,Vinduet`), så
+  modtageren ser de rigtige steder — også selv om de sidst så et andet kort.
+- **Uden `index.json`** er der ét kort, præcis som før. Filen er valgfri, og
+  resten af siden ved ikke, om den findes.
+
+Kortene er almindelige filer, og hvert af dem følges live som `places.json`:
+retter man `kort/forlystelsespark.json` på serveren, tegner åbne sider om af sig
+selv. Kan et kort ikke læses, står listen tomt — det arver ikke Skarresøs steder,
+for de hører til en anden illustration.
+
+**Kun hovedkortet kan rettes i browseren.** Det er det kort, hvis `fil` er
+`places.json` — netop den fil, som **Hent kortet** og `tools/publish.mjs` kender.
+På de andre kort er **Redigér steder** derfor skjult; dem retter man i deres egen
+JSON-fil. Selve samlingen ændres ved at rette `index.json`.
 
 ## Redigering og udgivelse
 
@@ -236,6 +330,9 @@ assets/app.js                kamera, zoom, markører, tråd, redigering, egne ge
 tools/publish.mjs            fra kladde til live i ét skridt
 examples/forlystelsespark.svg  indbygget eksempel — oversigtskort
 examples/teknisk-tegning.svg   indbygget eksempel — teknisk snit
+index.json                   samlingen — hvilke kort der ligger på siden (valgfri)
+kort/forlystelsespark.json    stederne for det andet kort
+kort/teknisk-tegning.json     stederne for det tredje kort
 places.json                  den fælles kilde — stederne
 plakat-low.webp              1500 px — vises med det samme
 plakat-web.webp              4600 px — byttes ind i baggrunden (samme udsnit)

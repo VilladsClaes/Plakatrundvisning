@@ -1,0 +1,27 @@
+{
+  "udgave": 1,
+  "kort": [
+    {
+      "id": "skarresoe",
+      "navn": "Skarresø",
+      "om": "Plakaten med landsbyen ved søen",
+      "fil": "places.json",
+      "billede": "plakat-web.webp",
+      "lav": "plakat-low.webp"
+    },
+    {
+      "id": "forlystelsespark",
+      "navn": "Forlystelsesparken",
+      "om": "Oversigtskort med sø og pariserhjul",
+      "fil": "kort/forlystelsespark.json",
+      "billede": "examples/forlystelsespark.svg"
+    },
+    {
+      "id": "teknisk-tegning",
+      "navn": "Teknisk tegning",
+      "om": "Snit af et hus, del for del",
+      "fil": "kort/teknisk-tegning.json",
+      "billede": "examples/teknisk-tegning.svg"
+    }
+  ]
+}

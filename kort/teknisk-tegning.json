@@ -1,0 +1,62 @@
+{
+  "navn": "Teknisk tegning",
+  "udgave": 1,
+  "places": [
+    {
+      "navn": "Tagkonstruktionen",
+      "tekst": "Spær i træ for hver 600 mm, lagt op over remmen. Den stiplede linje viser undertaget.",
+      "x": 0.6563,
+      "y": 0.273,
+      "zoom": 2.8
+    },
+    {
+      "navn": "Ovenlyset",
+      "tekst": "Ovenlysvinduet ligger i tagfladen mod vest og giver lys ind over køkkenbordet hele eftermiddagen.",
+      "x": 0.3469,
+      "y": 0.286,
+      "zoom": 3.2
+    },
+    {
+      "navn": "Skorstenen",
+      "tekst": "Skorstenen går gennem taget og mures i tegl. Den rækker 500 mm over kippen.",
+      "x": 0.5513,
+      "y": 0.218,
+      "zoom": 3
+    },
+    {
+      "navn": "Ydervæggen",
+      "tekst": "Ydervæggen er vist i snit: træskelet med udvendig beklædning, og skråstregerne er isoleringen.",
+      "x": 0.196,
+      "y": 0.545,
+      "zoom": 3.2
+    },
+    {
+      "navn": "Vinduet",
+      "tekst": "Vinduet er delt i tre ruder og sidder med underkanten 900 mm over gulvet.",
+      "x": 0.4375,
+      "y": 0.545,
+      "zoom": 3.2
+    },
+    {
+      "navn": "Gulvet",
+      "tekst": "Gulvpladen ligger på bjælker med 600 mm afstand, så den ikke giver sig, når man går på den.",
+      "x": 0.5625,
+      "y": 0.719,
+      "zoom": 3
+    },
+    {
+      "navn": "Fundamentet",
+      "tekst": "Fundamentet er støbt i beton og går 900 mm ned under terræn. Skråstregerne markerer betonen.",
+      "x": 0.625,
+      "y": 0.798,
+      "zoom": 3
+    },
+    {
+      "navn": "Trappen",
+      "tekst": "Trappen har otte trin fra gulvet i stuen og op til hemsen. Stigningen er 190 mm.",
+      "x": 0.7188,
+      "y": 0.636,
+      "zoom": 3.2
+    }
+  ]
+}

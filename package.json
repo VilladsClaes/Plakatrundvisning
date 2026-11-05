@@ -1,0 +1,16 @@
+{
+  "name": "plakatrundvisning",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interaktivt kort til store illustrationer — med lager på en Archil-disk.",
+  "engines": {
+    "node": ">=22.19"
+  },
+  "scripts": {
+    "check": "node --check tools/archil.mjs && node --check tools/archil-check.mjs && node --check tools/publish.mjs",
+    "archil:check": "node --env-file-if-exists=.env tools/archil-check.mjs"
+  },
+  "dependencies": {
+    "disk": "1.8.0"
+  }
+}
