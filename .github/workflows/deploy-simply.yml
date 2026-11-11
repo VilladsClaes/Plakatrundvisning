@@ -36,6 +36,8 @@ jobs:
           server-dir: /interaktivtkort/
           exclude: |
             **/.git*
+            **/.git*/**
+            **/node_modules/**
             **/.github/**
             **/.work/**
             **/.freebuff/**
